@@ -35,7 +35,8 @@ module RedmineApp
     config.active_record.yaml_column_permitted_classes = [
       Symbol,
       ActiveSupport::HashWithIndifferentAccess,
-      ActionController::Parameters
+      ActionController::Parameters,
+      ActiveSupport::Duration
     ]
 
     config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"
