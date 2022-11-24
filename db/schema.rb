@@ -10,36 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_080258) do
-
-  create_table "agile_colors", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.string "container_type"
-    t.integer "container_id"
-    t.string "color"
-    t.index ["container_id"], name: "index_agile_colors_on_container_id"
-    t.index ["container_type"], name: "index_agile_colors_on_container_type"
-  end
-
-  create_table "agile_data", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.integer "issue_id"
-    t.integer "position"
-    t.integer "story_points"
-    t.integer "agile_sprint_id"
-    t.index ["issue_id"], name: "index_agile_data_on_issue_id"
-    t.index ["position"], name: "index_agile_data_on_position"
-  end
-
-  create_table "agile_sprints", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.integer "project_id"
-    t.string "name", null: false
-    t.text "description"
-    t.integer "status", default: 0, null: false
-    t.date "start_date", null: false
-    t.date "end_date", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "sharing", default: 0, null: false
-  end
+ActiveRecord::Schema.define(version: 2022_02_24_194639) do
 
   create_table "attachments", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.integer "container_id"
@@ -78,12 +49,6 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "timeout"
     t.boolean "verify_peer", default: true, null: false
     t.index ["id", "type"], name: "index_auth_sources_on_id_and_type"
-  end
-
-  create_table "backups", charset: "utf8mb4", force: :cascade do |t|
-    t.string "backup"
-    t.integer "time"
-    t.integer "date"
   end
 
   create_table "boards", id: :integer, charset: "utf8mb4", force: :cascade do |t|
@@ -138,33 +103,6 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "issue_id", null: false
     t.index ["changeset_id", "issue_id"], name: "changesets_issues_ids", unique: true
     t.index ["issue_id"], name: "index_changesets_issues_on_issue_id"
-  end
-
-  create_table "checklist_template_categories", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.string "name"
-    t.integer "position", default: 1
-  end
-
-  create_table "checklist_templates", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.string "name"
-    t.integer "project_id"
-    t.integer "category_id"
-    t.integer "user_id"
-    t.boolean "is_public"
-    t.text "template_items"
-    t.boolean "is_default", default: false
-    t.integer "tracker_id"
-    t.index ["tracker_id"], name: "index_checklist_templates_on_tracker_id"
-  end
-
-  create_table "checklists", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.boolean "is_done", default: false
-    t.string "subject", limit: 512
-    t.integer "position", default: 1
-    t.integer "issue_id", null: false
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.boolean "is_section", default: false
   end
 
   create_table "comments", id: :integer, charset: "utf8mb4", force: :cascade do |t|
@@ -272,21 +210,6 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.string "position_name", limit: 30
     t.index ["id", "type"], name: "index_enumerations_on_id_and_type"
     t.index ["project_id"], name: "index_enumerations_on_project_id"
-  end
-
-  create_table "favorite_projects", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.integer "project_id"
-    t.integer "user_id"
-    t.index ["project_id", "user_id"], name: "index_favorite_projects_on_project_id_and_user_id"
-  end
-
-  create_table "favorite_projects_templates", id: :integer, charset: "utf8mb4", force: :cascade do |t|
-    t.string "name"
-    t.integer "visibility", default: 0
-    t.text "template"
-    t.text "description"
-    t.integer "owner_id"
-    t.index ["owner_id"], name: "index_favorite_projects_templates_on_owner_id"
   end
 
   create_table "groups_users", id: false, charset: "utf8mb4", force: :cascade do |t|
@@ -468,8 +391,6 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "default_version_id"
     t.integer "default_assigned_to_id"
     t.integer "default_issue_query_id"
-    t.boolean "rx_project_template", default: false
-    t.string "rx_resources_distribution", default: "default", null: false
     t.index ["lft"], name: "index_projects_on_lft"
     t.index ["rgt"], name: "index_projects_on_rgt"
   end
@@ -537,72 +458,11 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["role_id", "managed_role_id"], name: "index_roles_managed_roles_on_role_id_and_managed_role_id", unique: true
   end
 
-  create_table "rx_country_holidays", charset: "utf8mb4", force: :cascade do |t|
-    t.string "country"
-    t.string "country_iso"
-    t.string "holiday_type"
-    t.date "date"
-    t.integer "year"
-    t.string "name"
-    t.string "state"
-    t.string "state_iso"
-  end
-
-  create_table "rx_fixed_values", charset: "utf8mb4", force: :cascade do |t|
-    t.float "hours", null: false
-    t.date "date", null: false
-    t.integer "author_id", null: false
-    t.bigint "issue_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["date"], name: "index_rx_fixed_values_on_date"
-    t.index ["issue_id"], name: "index_rx_fixed_values_on_issue_id"
-  end
-
-  create_table "rx_statistics_charts", charset: "utf8mb4", force: :cascade do |t|
-    t.integer "rx_statistics_grid_id"
-    t.string "name"
-    t.string "chart_type"
-    t.date "from"
-    t.date "to"
-    t.string "interval"
-    t.string "interval_type"
-    t.string "unit"
-    t.string "datasets"
-    t.text "options"
-    t.integer "color_palette", default: 0
-    t.string "chart_group", default: "projects", null: false
-    t.string "chart_settings"
-    t.index ["rx_statistics_grid_id"], name: "index_rx_statistics_charts_on_rx_statistics_grid_id"
-  end
-
-  create_table "rx_statistics_grids", charset: "utf8mb4", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "project_id"
-    t.string "grid_type", null: false
-    t.text "data"
-    t.index ["project_id"], name: "index_rx_statistics_grids_on_project_id"
-    t.index ["user_id"], name: "index_rx_statistics_grids_on_user_id"
-  end
-
   create_table "settings", id: :integer, charset: "utf8mb4", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "value"
     t.timestamp "updated_on"
     t.index ["name"], name: "index_settings_on_name"
-  end
-
-  create_table "taggings", charset: "utf8mb4", force: :cascade do |t|
-    t.integer "tag_id"
-    t.integer "taggable_id"
-    t.string "taggable_type"
-    t.datetime "created_at"
-    t.index ["tag_id"], name: "index_taggings_on_tag_id"
-    t.index ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type"
-  end
-
-  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
-    t.string "name"
   end
 
   create_table "time_entries", id: :integer, charset: "utf8mb4", force: :cascade do |t|

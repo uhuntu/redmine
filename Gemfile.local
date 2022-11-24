@@ -1,0 +1,1 @@
+gem 'tes_redmine_extensions', path: "/opt/redmine/redmine-5.0.3/easy/gems/redmine_extensions"
