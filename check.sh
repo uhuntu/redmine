@@ -1,1 +1,1 @@
-rails zeitwerk:check
+rails zeitwerk:check --trace
