@@ -1,3 +1,0 @@
----
-BUNDLE_DEPLOYMENT: "false"
-BUNDLE_WITHOUT: "development:test:RAILS_ENV=production"
