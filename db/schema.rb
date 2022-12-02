@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2022_10_14_080258) do
 
-  create_table "addresses", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "street1"
     t.string "street2"
     t.string "city"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type"
   end
 
-  create_table "agile_colors", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "agile_colors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "container_type"
     t.integer "container_id"
     t.string "color"
@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["container_type"], name: "index_agile_colors_on_container_type"
   end
 
-  create_table "agile_data", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "agile_data", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "issue_id"
     t.integer "position"
     t.integer "story_points"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["position"], name: "index_agile_data_on_position"
   end
 
-  create_table "agile_sprints", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "agile_sprints", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "name", null: false
     t.text "description"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "sharing", default: 0, null: false
   end
 
-  create_table "attachments", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "attachments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "container_id"
     t.string "container_type", limit: 30
     t.string "filename", default: "", null: false
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["disk_filename"], name: "index_attachments_on_disk_filename"
   end
 
-  create_table "auth_sources", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "auth_sources", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "type", limit: 30, default: "", null: false
     t.string "name", limit: 60, default: "", null: false
     t.string "host", limit: 60
@@ -97,13 +97,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["id", "type"], name: "index_auth_sources_on_id_and_type"
   end
 
-  create_table "backups", charset: "utf8mb4", force: :cascade do |t|
+  create_table "backups", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "backup"
     t.integer "time"
     t.integer "date"
   end
 
-  create_table "boards", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "boards", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", default: "", null: false
     t.string "description"
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "boards_project_id"
   end
 
-  create_table "changes", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "changes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "changeset_id", null: false
     t.string "action", limit: 1, default: "", null: false
     t.text "path", null: false
@@ -127,14 +127,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["changeset_id"], name: "changesets_changeset_id"
   end
 
-  create_table "changeset_parents", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "changeset_parents", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "changeset_id", null: false
     t.integer "parent_id", null: false
     t.index ["changeset_id"], name: "changeset_parents_changeset_ids"
     t.index ["parent_id"], name: "changeset_parents_parent_ids"
   end
 
-  create_table "changesets", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "changesets", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "repository_id", null: false
     t.string "revision", null: false
     t.string "committer"
@@ -150,19 +150,19 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_changesets_on_user_id"
   end
 
-  create_table "changesets_issues", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "changesets_issues", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "changeset_id", null: false
     t.integer "issue_id", null: false
     t.index ["changeset_id", "issue_id"], name: "changesets_issues_ids", unique: true
     t.index ["issue_id"], name: "index_changesets_issues_on_issue_id"
   end
 
-  create_table "checklist_template_categories", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "checklist_template_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
     t.integer "position", default: 1
   end
 
-  create_table "checklist_templates", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "checklist_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
     t.integer "project_id"
     t.integer "category_id"
@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["tracker_id"], name: "index_checklist_templates_on_tracker_id"
   end
 
-  create_table "checklists", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "checklists", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.boolean "is_done", default: false
     t.string "subject", limit: 512
     t.integer "position", default: 1
@@ -184,7 +184,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.boolean "is_section", default: false
   end
 
-  create_table "comments", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "comments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "commented_type", limit: 30, default: "", null: false
     t.integer "commented_id", default: 0, null: false
     t.integer "author_id", default: 0, null: false
@@ -195,7 +195,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["commented_id", "commented_type"], name: "index_comments_on_commented_id_and_commented_type"
   end
 
-  create_table "contacts", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "contacts", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.string "middle_name"
@@ -223,28 +223,28 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["is_company"], name: "index_contacts_on_is_company"
   end
 
-  create_table "contacts_deals", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "contacts_deals", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "deal_id"
     t.integer "contact_id"
     t.index ["contact_id"], name: "index_contacts_deals_on_contact_id"
     t.index ["deal_id"], name: "index_contacts_deals_on_deal_id"
   end
 
-  create_table "contacts_issues", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "contacts_issues", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "issue_id", default: 0, null: false
     t.integer "contact_id", default: 0, null: false
     t.index ["contact_id"], name: "index_contacts_issues_on_contact_id"
     t.index ["issue_id"], name: "index_contacts_issues_on_issue_id"
   end
 
-  create_table "contacts_projects", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "contacts_projects", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.integer "contact_id", default: 0, null: false
     t.index ["contact_id"], name: "index_contacts_projects_on_contact_id"
     t.index ["project_id"], name: "index_contacts_projects_on_project_id"
   end
 
-  create_table "contacts_queries", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "contacts_queries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "name", default: "", null: false
     t.text "filters"
@@ -258,14 +258,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_contacts_queries_on_user_id"
   end
 
-  create_table "custom_field_enumerations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_field_enumerations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "custom_field_id", null: false
     t.string "name", null: false
     t.boolean "active", default: true, null: false
     t.integer "position", default: 1, null: false
   end
 
-  create_table "custom_fields", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_fields", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "type", limit: 30, default: "", null: false
     t.string "name", limit: 30, default: "", null: false
     t.string "field_format", limit: 30, default: "", null: false
@@ -287,25 +287,25 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["id", "type"], name: "index_custom_fields_on_id_and_type"
   end
 
-  create_table "custom_fields_projects", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_fields_projects", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "custom_field_id", default: 0, null: false
     t.integer "project_id", default: 0, null: false
     t.index ["custom_field_id", "project_id"], name: "index_custom_fields_projects_on_custom_field_id_and_project_id", unique: true
   end
 
-  create_table "custom_fields_roles", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_fields_roles", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "custom_field_id", null: false
     t.integer "role_id", null: false
     t.index ["custom_field_id", "role_id"], name: "custom_fields_roles_ids", unique: true
   end
 
-  create_table "custom_fields_trackers", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_fields_trackers", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "custom_field_id", default: 0, null: false
     t.integer "tracker_id", default: 0, null: false
     t.index ["custom_field_id", "tracker_id"], name: "index_custom_fields_trackers_on_custom_field_id_and_tracker_id", unique: true
   end
 
-  create_table "custom_values", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "custom_values", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "customized_type", limit: 30, default: "", null: false
     t.integer "customized_id", default: 0, null: false
     t.integer "custom_field_id", default: 0, null: false
@@ -314,13 +314,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["customized_type", "customized_id"], name: "custom_values_customized"
   end
 
-  create_table "deal_categories", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deal_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", null: false
     t.integer "project_id"
     t.index ["project_id"], name: "index_deal_categories_on_project_id"
   end
 
-  create_table "deal_processes", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deal_processes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "deal_id", null: false
     t.integer "author_id", null: false
     t.integer "old_value"
@@ -330,7 +330,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["deal_id"], name: "index_deal_processes_on_deal_id"
   end
 
-  create_table "deal_statuses", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deal_statuses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", null: false
     t.integer "position"
     t.boolean "is_default", default: false, null: false
@@ -338,13 +338,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "status_type", default: 0, null: false
   end
 
-  create_table "deal_statuses_projects", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deal_statuses_projects", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.integer "deal_status_id", default: 0, null: false
     t.index ["project_id", "deal_status_id"], name: "index_deal_statuses_projects_on_project_id_and_deal_status_id"
   end
 
-  create_table "deals", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deals", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
     t.text "background"
     t.string "currency"
@@ -368,14 +368,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["status_id"], name: "index_deals_on_status_id"
   end
 
-  create_table "deals_issues", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "deals_issues", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "issue_id", default: 0, null: false
     t.integer "deal_id", default: 0, null: false
     t.index ["deal_id"], name: "index_deals_issues_on_deal_id"
     t.index ["issue_id"], name: "index_deals_issues_on_issue_id"
   end
 
-  create_table "documents", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "documents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.integer "category_id", default: 0, null: false
     t.string "title", default: "", null: false
@@ -386,7 +386,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "documents_project_id"
   end
 
-  create_table "email_addresses", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "email_addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "address", null: false
     t.boolean "is_default", default: false, null: false
@@ -396,13 +396,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_email_addresses_on_user_id"
   end
 
-  create_table "enabled_modules", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "enabled_modules", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "name", null: false
     t.index ["project_id"], name: "enabled_modules_project_id"
   end
 
-  create_table "enumerations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "enumerations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", limit: 30, default: "", null: false
     t.integer "position"
     t.boolean "is_default", default: false, null: false
@@ -415,13 +415,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "index_enumerations_on_project_id"
   end
 
-  create_table "favorite_projects", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "favorite_projects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.integer "user_id"
     t.index ["project_id", "user_id"], name: "index_favorite_projects_on_project_id_and_user_id"
   end
 
-  create_table "favorite_projects_templates", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "favorite_projects_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
     t.integer "visibility", default: 0
     t.text "template"
@@ -430,13 +430,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["owner_id"], name: "index_favorite_projects_templates_on_owner_id"
   end
 
-  create_table "groups_users", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "groups_users", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "group_id", null: false
     t.integer "user_id", null: false
     t.index ["group_id", "user_id"], name: "groups_users_ids", unique: true
   end
 
-  create_table "import_items", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "import_items", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "import_id", null: false
     t.integer "position", null: false
     t.integer "obj_id"
@@ -445,7 +445,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["import_id", "unique_id"], name: "index_import_items_on_import_id_and_unique_id"
   end
 
-  create_table "imports", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "imports", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "type"
     t.integer "user_id", null: false
     t.string "filename"
@@ -456,7 +456,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "issue_categories", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "issue_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.string "name", limit: 60, default: "", null: false
     t.integer "assigned_to_id"
@@ -464,7 +464,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "issue_categories_project_id"
   end
 
-  create_table "issue_relations", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "issue_relations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "issue_from_id", null: false
     t.integer "issue_to_id", null: false
     t.string "relation_type", default: "", null: false
@@ -474,7 +474,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["issue_to_id"], name: "index_issue_relations_on_issue_to_id"
   end
 
-  create_table "issue_statuses", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "issue_statuses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", limit: 30, default: "", null: false
     t.boolean "is_closed", default: false, null: false
     t.integer "position"
@@ -483,7 +483,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["position"], name: "index_issue_statuses_on_position"
   end
 
-  create_table "issues", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "issues", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "tracker_id", null: false
     t.integer "project_id", null: false
     t.string "subject", default: "", null: false
@@ -520,7 +520,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["tracker_id"], name: "index_issues_on_tracker_id"
   end
 
-  create_table "journal_details", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "journal_details", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "journal_id", default: 0, null: false
     t.string "property", limit: 30, default: "", null: false
     t.string "prop_key", limit: 30, default: "", null: false
@@ -529,7 +529,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["journal_id"], name: "journal_details_journal_id"
   end
 
-  create_table "journals", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "journals", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "journalized_id", default: 0, null: false
     t.string "journalized_type", limit: 30, default: "", null: false
     t.integer "user_id", default: 0, null: false
@@ -542,7 +542,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_journals_on_user_id"
   end
 
-  create_table "member_roles", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "member_roles", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "member_id", null: false
     t.integer "role_id", null: false
     t.integer "inherited_from"
@@ -551,7 +551,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["role_id"], name: "index_member_roles_on_role_id"
   end
 
-  create_table "members", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "members", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", default: 0, null: false
     t.integer "project_id", default: 0, null: false
     t.timestamp "created_on"
@@ -561,7 +561,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_members_on_user_id"
   end
 
-  create_table "messages", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "messages", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "parent_id"
     t.string "subject", default: "", null: false
@@ -580,7 +580,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["parent_id"], name: "messages_parent_id"
   end
 
-  create_table "news", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "news", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "title", limit: 60, default: "", null: false
     t.string "summary", default: ""
@@ -593,7 +593,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "news_project_id"
   end
 
-  create_table "notes", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "notes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "subject"
     t.text "content"
     t.integer "source_id"
@@ -607,7 +607,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["type_id"], name: "index_notes_on_type_id"
   end
 
-  create_table "projects", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "projects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "description"
     t.string "homepage", default: ""
@@ -629,14 +629,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["rgt"], name: "index_projects_on_rgt"
   end
 
-  create_table "projects_trackers", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "projects_trackers", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.integer "tracker_id", default: 0, null: false
     t.index ["project_id", "tracker_id"], name: "projects_trackers_unique", unique: true
     t.index ["project_id"], name: "projects_trackers_project_id"
   end
 
-  create_table "queries", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "queries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "name", default: "", null: false
     t.text "filters"
@@ -651,13 +651,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_queries_on_user_id"
   end
 
-  create_table "queries_roles", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "queries_roles", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "query_id", null: false
     t.integer "role_id", null: false
     t.index ["query_id", "role_id"], name: "queries_roles_ids", unique: true
   end
 
-  create_table "repositories", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "repositories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.string "url", default: "", null: false
     t.string "login", limit: 60, default: ""
@@ -673,7 +673,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "index_repositories_on_project_id"
   end
 
-  create_table "roles", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "roles", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.integer "position"
     t.boolean "assignable", default: true
@@ -686,13 +686,13 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.text "settings"
   end
 
-  create_table "roles_managed_roles", id: false, charset: "utf8mb4", force: :cascade do |t|
+  create_table "roles_managed_roles", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "role_id", null: false
     t.integer "managed_role_id", null: false
     t.index ["role_id", "managed_role_id"], name: "index_roles_managed_roles_on_role_id_and_managed_role_id", unique: true
   end
 
-  create_table "rx_country_holidays", charset: "utf8mb4", force: :cascade do |t|
+  create_table "rx_country_holidays", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "country"
     t.string "country_iso"
     t.string "holiday_type"
@@ -703,7 +703,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.string "state_iso"
   end
 
-  create_table "rx_fixed_values", charset: "utf8mb4", force: :cascade do |t|
+  create_table "rx_fixed_values", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.float "hours", null: false
     t.date "date", null: false
     t.integer "author_id", null: false
@@ -714,7 +714,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["issue_id"], name: "index_rx_fixed_values_on_issue_id"
   end
 
-  create_table "rx_statistics_charts", charset: "utf8mb4", force: :cascade do |t|
+  create_table "rx_statistics_charts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "rx_statistics_grid_id"
     t.string "name"
     t.string "chart_type"
@@ -731,7 +731,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["rx_statistics_grid_id"], name: "index_rx_statistics_charts_on_rx_statistics_grid_id"
   end
 
-  create_table "rx_statistics_grids", charset: "utf8mb4", force: :cascade do |t|
+  create_table "rx_statistics_grids", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id"
     t.integer "project_id"
     t.string "grid_type", null: false
@@ -740,14 +740,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_rx_statistics_grids_on_user_id"
   end
 
-  create_table "settings", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "value"
     t.timestamp "updated_on"
     t.index ["name"], name: "index_settings_on_name"
   end
 
-  create_table "taggings", charset: "utf8mb4", force: :cascade do |t|
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
     t.string "taggable_type"
@@ -756,11 +756,11 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type"
   end
 
-  create_table "tags", charset: "utf8mb4", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
   end
 
-  create_table "time_entries", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "time_entries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "author_id"
     t.integer "user_id", null: false
@@ -781,7 +781,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_time_entries_on_user_id"
   end
 
-  create_table "tokens", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "tokens", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", default: 0, null: false
     t.string "action", limit: 30, default: "", null: false
     t.string "value", limit: 40, default: "", null: false
@@ -791,7 +791,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["value"], name: "tokens_value", unique: true
   end
 
-  create_table "trackers", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "trackers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", limit: 30, default: "", null: false
     t.string "description"
     t.integer "position"
@@ -800,7 +800,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "default_status_id"
   end
 
-  create_table "user_preferences", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "user_preferences", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", default: 0, null: false
     t.text "others"
     t.boolean "hide_mail", default: true
@@ -808,7 +808,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["user_id"], name: "index_user_preferences_on_user_id"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "login", default: "", null: false
     t.string "hashed_password", limit: 40, default: "", null: false
     t.string "firstname", limit: 30, default: "", null: false
@@ -834,7 +834,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["type"], name: "index_users_on_type"
   end
 
-  create_table "versions", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "versions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.string "name", default: "", null: false
     t.string "description", default: ""
@@ -848,7 +848,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["sharing"], name: "index_versions_on_sharing"
   end
 
-  create_table "watchers", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "watchers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "watchable_type", default: "", null: false
     t.integer "watchable_id", default: 0, null: false
     t.integer "user_id"
@@ -857,7 +857,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["watchable_id", "watchable_type"], name: "index_watchers_on_watchable_id_and_watchable_type"
   end
 
-  create_table "wiki_content_versions", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "wiki_content_versions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "wiki_content_id", null: false
     t.integer "page_id", null: false
     t.integer "author_id"
@@ -870,7 +870,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["wiki_content_id"], name: "wiki_content_versions_wcid"
   end
 
-  create_table "wiki_contents", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "wiki_contents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "page_id", null: false
     t.integer "author_id"
     t.text "text", size: :long
@@ -881,7 +881,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["page_id"], name: "wiki_contents_page_id"
   end
 
-  create_table "wiki_pages", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "wiki_pages", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "wiki_id", null: false
     t.string "title", null: false
     t.datetime "created_on", null: false
@@ -892,7 +892,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["wiki_id"], name: "index_wiki_pages_on_wiki_id"
   end
 
-  create_table "wiki_redirects", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "wiki_redirects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "wiki_id", null: false
     t.string "title"
     t.string "redirects_to"
@@ -902,14 +902,14 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["wiki_id"], name: "index_wiki_redirects_on_wiki_id"
   end
 
-  create_table "wikis", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "wikis", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "start_page", null: false
     t.integer "status", default: 1, null: false
     t.index ["project_id"], name: "wikis_project_id"
   end
 
-  create_table "workflows", id: :integer, charset: "utf8mb4", force: :cascade do |t|
+  create_table "workflows", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "tracker_id", default: 0, null: false
     t.integer "old_status_id", default: 0, null: false
     t.integer "new_status_id", default: 0, null: false
