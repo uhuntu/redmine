@@ -386,6 +386,27 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "documents_project_id"
   end
 
+  create_table "easy_entity_assignments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "entity_from_type"
+    t.integer "entity_from_id"
+    t.string "entity_to_type"
+    t.integer "entity_to_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["entity_from_id"], name: "entity_assignment_idx_from"
+    t.index ["entity_from_type", "entity_from_id", "entity_to_type", "entity_to_id"], name: "entity_assignment_idx", unique: true
+    t.index ["entity_to_id"], name: "entity_assignment_idx_to"
+  end
+
+  create_table "easy_settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "type"
+    t.string "name"
+    t.text "value"
+    t.integer "project_id"
+    t.index ["name", "project_id"], name: "index_easy_settings_on_name_and_project_id", unique: true
+    t.index ["project_id"], name: "index_easy_settings_on_project_id"
+  end
+
   create_table "email_addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "address", null: false
