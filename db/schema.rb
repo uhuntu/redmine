@@ -284,6 +284,7 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.boolean "multiple", default: false
     t.text "format_store"
     t.text "description"
+    t.boolean "dmsf_not_inheritable"
     t.index ["id", "type"], name: "index_custom_fields_on_id_and_type"
   end
 
@@ -373,6 +374,155 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.integer "deal_id", default: 0, null: false
     t.index ["deal_id"], name: "index_deals_issues_on_deal_id"
     t.index ["issue_id"], name: "index_deals_issues_on_issue_id"
+  end
+
+  create_table "dmsf_file_revision_accesses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_file_revision_id", null: false
+    t.integer "action", default: 0, null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dmsf_file_revision_id"], name: "index_dmsf_file_revision_accesses_on_dmsf_file_revision_id"
+  end
+
+  create_table "dmsf_file_revisions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_file_id", null: false
+    t.integer "source_dmsf_file_revision_id"
+    t.string "name", null: false
+    t.string "disk_filename", null: false
+    t.bigint "size"
+    t.string "mime_type"
+    t.string "title", null: false
+    t.text "description"
+    t.integer "workflow"
+    t.integer "major_version", null: false
+    t.integer "minor_version", null: false
+    t.integer "patch_version"
+    t.text "comment"
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "dmsf_workflow_id"
+    t.integer "dmsf_workflow_assigned_by_user_id"
+    t.datetime "dmsf_workflow_assigned_at"
+    t.integer "dmsf_workflow_started_by_user_id"
+    t.datetime "dmsf_workflow_started_at"
+    t.string "digest", limit: 64, default: "", null: false
+    t.index ["dmsf_file_id"], name: "index_dmsf_file_revisions_on_dmsf_file_id"
+  end
+
+  create_table "dmsf_files", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.string "name", null: false
+    t.boolean "notification", default: false
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_files_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_files_on_project_id"
+  end
+
+  create_table "dmsf_folder_permissions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_folder_id"
+    t.integer "object_id", null: false
+    t.string "object_type", limit: 30, null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_folder_permissions_on_dmsf_folder_id"
+  end
+
+  create_table "dmsf_folders", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.string "title", null: false
+    t.text "description"
+    t.boolean "notification", default: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.boolean "system", default: false, null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_folders_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_folders_on_project_id"
+  end
+
+  create_table "dmsf_links", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "target_project_id", null: false
+    t.integer "target_id"
+    t.string "target_type", limit: 10, null: false
+    t.string "name", null: false
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "external_url"
+    t.integer "user_id"
+    t.index ["dmsf_folder_id"], name: "index_dmsf_links_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_links_on_project_id"
+  end
+
+  create_table "dmsf_locks", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "entity_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "entity_type", null: false
+    t.integer "lock_type_cd", null: false
+    t.integer "lock_scope_cd", null: false
+    t.string "uuid", limit: 36
+    t.datetime "expires_at"
+    t.integer "dmsf_file_last_revision_id"
+    t.string "owner"
+    t.index ["entity_id", "entity_type"], name: "index_dmsf_locks_on_entity_id_and_entity_type"
+  end
+
+  create_table "dmsf_public_urls", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "token", limit: 32, null: false
+    t.integer "dmsf_file_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "expire_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["token"], name: "index_dmsf_public_urls_on_token"
+  end
+
+  create_table "dmsf_workflow_step_actions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_step_assignment_id", null: false
+    t.integer "action", null: false
+    t.text "note"
+    t.timestamp "created_at", default: -> { "current_timestamp()" }, null: false
+    t.integer "author_id", null: false
+    t.index ["dmsf_workflow_step_assignment_id"], name: "idx_dmsf_wfstepact_on_wfstepassign_id"
+  end
+
+  create_table "dmsf_workflow_step_assignments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_step_id", null: false
+    t.integer "user_id", null: false
+    t.integer "dmsf_file_revision_id", null: false
+    t.index ["dmsf_workflow_step_id", "dmsf_file_revision_id"], name: "index_dmsf_wrkfl_step_assigns_on_wrkfl_step_id_and_frev_id", unique: true
+  end
+
+  create_table "dmsf_workflow_steps", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_id", null: false
+    t.integer "step", null: false
+    t.integer "user_id", null: false
+    t.integer "operator", null: false
+    t.string "name", limit: 30
+    t.index ["dmsf_workflow_id"], name: "index_dmsf_workflow_steps_on_dmsf_workflow_id"
+  end
+
+  create_table "dmsf_workflows", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "project_id"
+    t.integer "status", default: 1, null: false
+    t.timestamp "updated_on"
+    t.datetime "created_on"
+    t.integer "author_id"
   end
 
   create_table "documents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -577,6 +727,9 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.integer "project_id", default: 0, null: false
     t.timestamp "created_on"
     t.boolean "mail_notification", default: false, null: false
+    t.boolean "dmsf_mail_notification"
+    t.text "dmsf_title_format", size: :tiny
+    t.boolean "dmsf_fast_links", default: false, null: false
     t.index ["project_id"], name: "index_members_on_project_id"
     t.index ["user_id", "project_id"], name: "index_members_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_members_on_user_id"
@@ -646,6 +799,10 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.integer "default_issue_query_id"
     t.boolean "rx_project_template", default: false
     t.string "rx_resources_distribution", default: "default", null: false
+    t.text "dmsf_description"
+    t.boolean "dmsf_notification", default: false
+    t.integer "dmsf_act_as_attachable", default: 1, null: false
+    t.integer "default_dmsf_query_id"
     t.index ["lft"], name: "index_projects_on_lft"
     t.index ["rgt"], name: "index_projects_on_rgt"
   end
