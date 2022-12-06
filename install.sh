@@ -17,6 +17,7 @@ bundle exec rake redmine:plugins NAME=redmine_x_resources RAILS_ENV=production
 bundle exec rake redmine:plugins NAME=redmine_x_statistics RAILS_ENV=production
 bundle exec rake redmine:plugins NAME=redmine_dmsf RAILS_ENV=production
 bundle exec rake redmine:plugins NAME=redmine_drawio RAILS_ENV=production
+bundle exec rake redmine:plugins NAME=redmine_backup RAILS_ENV=production
 
 bundle exec rake redmine:plugins:migrate NAME=easy_wbs RAILS_ENV=production
 bundle exec rake redmine:plugins:migrate NAME=000_redmine_x_ux_upgrade RAILS_ENV=production
@@ -32,6 +33,9 @@ bundle exec rake redmine:plugins:migrate NAME=redmine_x_resources RAILS_ENV=prod
 bundle exec rake redmine:plugins:migrate NAME=redmine_x_statistics RAILS_ENV=production
 bundle exec rake redmine:plugins:migrate NAME=redmine_dmsf RAILS_ENV=production
 bundle exec rake redmine:plugins:migrate NAME=redmine_drawio RAILS_ENV=production
+bundle exec rake redmine:plugins:migrate NAME=redmine_backup RAILS_ENV=production
 
 bundle exec rake db:migrate RAILS_ENV=production
 bundle exec rake zeitwerk:check --trace
+
+bundle install
