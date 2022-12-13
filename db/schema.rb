@@ -116,6 +116,14 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.index ["project_id"], name: "boards_project_id"
   end
 
+  create_table "canned_responses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.text "content"
+    t.integer "project_id"
+    t.integer "user_id"
+    t.boolean "is_public"
+  end
+
   create_table "changes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "changeset_id", null: false
     t.string "action", limit: 1, default: "", null: false
@@ -607,6 +615,37 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.index ["group_id", "user_id"], name: "groups_users_ids", unique: true
   end
 
+  create_table "helpdesk_mail_rules", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "mail_type"
+    t.text "conditions"
+    t.text "actions"
+    t.integer "user_id", null: false
+    t.integer "position", default: 0
+  end
+
+  create_table "helpdesk_tickets", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "contact_id"
+    t.integer "issue_id"
+    t.integer "source", default: 0, null: false
+    t.string "from_address"
+    t.string "to_address"
+    t.datetime "ticket_date"
+    t.string "cc_address"
+    t.string "message_id"
+    t.boolean "is_incoming", default: true
+    t.integer "reaction_time"
+    t.integer "first_response_time"
+    t.integer "resolve_time"
+    t.datetime "last_agent_response_at"
+    t.datetime "last_customer_response_at"
+    t.integer "vote"
+    t.string "vote_comment"
+    t.string "view_id"
+    t.datetime "viewed_on"
+    t.index ["issue_id", "contact_id"], name: "index_helpdesk_tickets_on_issue_id_and_contact_id"
+    t.index ["message_id"], name: "index_helpdesk_tickets_on_message_id"
+  end
+
   create_table "import_items", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "import_id", null: false
     t.integer "position", null: false
@@ -698,6 +737,23 @@ ActiveRecord::Schema.define(version: 2022_11_27_091145) do
     t.text "old_value", size: :long
     t.text "value", size: :long
     t.index ["journal_id"], name: "journal_details_journal_id"
+  end
+
+  create_table "journal_messages", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "contact_id"
+    t.integer "journal_id"
+    t.boolean "is_incoming"
+    t.integer "source", default: 0, null: false
+    t.string "from_address"
+    t.string "to_address"
+    t.string "bcc_address"
+    t.string "cc_address"
+    t.datetime "message_date"
+    t.string "message_id"
+    t.string "view_id"
+    t.datetime "viewed_on"
+    t.index ["journal_id", "contact_id"], name: "index_journal_messages_on_journal_id_and_contact_id"
+    t.index ["message_id"], name: "index_journal_messages_on_message_id"
   end
 
   create_table "journals", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
