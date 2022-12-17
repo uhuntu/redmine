@@ -74,6 +74,35 @@ namespace :redmine do
     Rake::Task["redmine:plugins:assets"].invoke
   end
 
+  desc 'Migrate hunt.'
+  task :migrate_hunt => :environment do
+    ActiveRecord::Base.establish_connection :production
+    source_tables = ActiveRecord::Base.connection.tables.sort
+    ActiveRecord::Base.remove_connection
+
+    source_tables.each do |table_name|
+      Source = Class.new(ActiveRecord::Base)
+      Source.establish_connection(:production)
+      Source.table_name = table_name
+      if table_name == "custom_values"
+        customers = Source.where(custom_field_id: 34).group('customized_id')
+        counts = customers.count
+        counts.each do |count|
+          if count[1] == 2
+            repeat = Source.where(custom_field_id: 34, customized_id: count[0])
+            puts "project_id = #{count[0]}"
+            puts "repeat[0]  = #{repeat[0].value}"
+            puts "repeat[1]  = #{repeat[1].value}"
+            repeat[1].destroy
+          end
+        end
+      end
+      # source_count = Source.count
+      # puts "Migrating %6d records from #{table_name}..." % source_count
+      Object.send(:remove_const, :Source)
+    end
+  end
+
 desc <<-DESC
 FOR EXPERIMENTAL USE ONLY, Moves Redmine data from production database to the development database.
 This task should only be used when you need to move data from one DBMS to a different one (eg. MySQL to PostgreSQL).
