@@ -10,7 +10,53 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_24_194639) do
+ActiveRecord::Schema.define(version: 2022_10_14_080258) do
+
+  create_table "addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "street1"
+    t.string "street2"
+    t.string "city"
+    t.string "region"
+    t.string "postcode"
+    t.string "country_code", limit: 2
+    t.text "full_address"
+    t.string "address_type", limit: 16
+    t.string "addressable_type"
+    t.integer "addressable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["address_type"], name: "index_addresses_on_address_type"
+    t.index ["addressable_id", "addressable_type"], name: "index_addresses_on_addressable_id_and_addressable_type"
+  end
+
+  create_table "agile_colors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "container_type"
+    t.integer "container_id"
+    t.string "color"
+    t.index ["container_id"], name: "index_agile_colors_on_container_id"
+    t.index ["container_type"], name: "index_agile_colors_on_container_type"
+  end
+
+  create_table "agile_data", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "issue_id"
+    t.integer "position"
+    t.integer "story_points"
+    t.integer "agile_sprint_id"
+    t.index ["issue_id"], name: "index_agile_data_on_issue_id"
+    t.index ["position"], name: "index_agile_data_on_position"
+  end
+
+  create_table "agile_sprints", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "name", null: false
+    t.text "description"
+    t.integer "status", default: 0, null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "sharing", default: 0, null: false
+  end
 
   create_table "attachments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "container_id"
@@ -51,6 +97,12 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["id", "type"], name: "index_auth_sources_on_id_and_type"
   end
 
+  create_table "backups", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "backup"
+    t.integer "time"
+    t.integer "date"
+  end
+
   create_table "boards", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", default: "", null: false
@@ -62,6 +114,14 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.integer "parent_id"
     t.index ["last_message_id"], name: "index_boards_on_last_message_id"
     t.index ["project_id"], name: "boards_project_id"
+  end
+
+  create_table "canned_responses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.text "content"
+    t.integer "project_id"
+    t.integer "user_id"
+    t.boolean "is_public"
   end
 
   create_table "changes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -105,6 +165,33 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["issue_id"], name: "index_changesets_issues_on_issue_id"
   end
 
+  create_table "checklist_template_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.integer "position", default: 1
+  end
+
+  create_table "checklist_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.integer "project_id"
+    t.integer "category_id"
+    t.integer "user_id"
+    t.boolean "is_public"
+    t.text "template_items"
+    t.boolean "is_default", default: false
+    t.integer "tracker_id"
+    t.index ["tracker_id"], name: "index_checklist_templates_on_tracker_id"
+  end
+
+  create_table "checklists", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.boolean "is_done", default: false
+    t.string "subject", limit: 512
+    t.integer "position", default: 1
+    t.integer "issue_id", null: false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.boolean "is_section", default: false
+  end
+
   create_table "comments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "commented_type", limit: 30, default: "", null: false
     t.integer "commented_id", default: 0, null: false
@@ -114,6 +201,69 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.datetime "updated_on", null: false
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["commented_id", "commented_type"], name: "index_comments_on_commented_id_and_commented_type"
+  end
+
+  create_table "contacts", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.string "middle_name"
+    t.string "company"
+    t.string "phone"
+    t.string "email"
+    t.string "website"
+    t.string "skype_name"
+    t.date "birthday"
+    t.string "avatar"
+    t.text "background"
+    t.string "job_title"
+    t.boolean "is_company", default: false
+    t.integer "author_id", default: 0, null: false
+    t.integer "assigned_to_id"
+    t.datetime "created_on"
+    t.datetime "updated_on"
+    t.string "cached_tag_list"
+    t.integer "visibility", default: 0, null: false
+    t.index ["assigned_to_id"], name: "index_contacts_on_assigned_to_id"
+    t.index ["author_id"], name: "index_contacts_on_author_id"
+    t.index ["company"], name: "index_contacts_on_company"
+    t.index ["email"], name: "index_contacts_on_email"
+    t.index ["first_name"], name: "index_contacts_on_first_name"
+    t.index ["is_company"], name: "index_contacts_on_is_company"
+  end
+
+  create_table "contacts_deals", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "deal_id"
+    t.integer "contact_id"
+    t.index ["contact_id"], name: "index_contacts_deals_on_contact_id"
+    t.index ["deal_id"], name: "index_contacts_deals_on_deal_id"
+  end
+
+  create_table "contacts_issues", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "issue_id", default: 0, null: false
+    t.integer "contact_id", default: 0, null: false
+    t.index ["contact_id"], name: "index_contacts_issues_on_contact_id"
+    t.index ["issue_id"], name: "index_contacts_issues_on_issue_id"
+  end
+
+  create_table "contacts_projects", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", default: 0, null: false
+    t.integer "contact_id", default: 0, null: false
+    t.index ["contact_id"], name: "index_contacts_projects_on_contact_id"
+    t.index ["project_id"], name: "index_contacts_projects_on_project_id"
+  end
+
+  create_table "contacts_queries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id"
+    t.string "name", default: "", null: false
+    t.text "filters"
+    t.integer "user_id", default: 0, null: false
+    t.boolean "is_public", default: false, null: false
+    t.text "column_names"
+    t.text "sort_criteria"
+    t.string "group_by"
+    t.string "type"
+    t.index ["project_id"], name: "index_contacts_queries_on_project_id"
+    t.index ["user_id"], name: "index_contacts_queries_on_user_id"
   end
 
   create_table "custom_field_enumerations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -142,6 +292,7 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.boolean "multiple", default: false
     t.text "format_store"
     t.text "description"
+    t.boolean "dmsf_not_inheritable"
     t.index ["id", "type"], name: "index_custom_fields_on_id_and_type"
   end
 
@@ -172,6 +323,216 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["customized_type", "customized_id"], name: "custom_values_customized"
   end
 
+  create_table "deal_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "project_id"
+    t.index ["project_id"], name: "index_deal_categories_on_project_id"
+  end
+
+  create_table "deal_processes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "deal_id", null: false
+    t.integer "author_id", null: false
+    t.integer "old_value"
+    t.integer "value", null: false
+    t.datetime "created_at"
+    t.index ["author_id"], name: "index_deal_processes_on_author_id"
+    t.index ["deal_id"], name: "index_deal_processes_on_deal_id"
+  end
+
+  create_table "deal_statuses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "position"
+    t.boolean "is_default", default: false, null: false
+    t.integer "color", default: 11184810, null: false
+    t.integer "status_type", default: 0, null: false
+  end
+
+  create_table "deal_statuses_projects", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", default: 0, null: false
+    t.integer "deal_status_id", default: 0, null: false
+    t.index ["project_id", "deal_status_id"], name: "index_deal_statuses_projects_on_project_id_and_deal_status_id"
+  end
+
+  create_table "deals", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.text "background"
+    t.string "currency"
+    t.integer "duration", default: 1
+    t.decimal "price", precision: 20, scale: 2
+    t.integer "price_type"
+    t.integer "project_id"
+    t.integer "author_id"
+    t.integer "assigned_to_id"
+    t.integer "status_id"
+    t.integer "contact_id"
+    t.integer "category_id"
+    t.datetime "created_on"
+    t.datetime "updated_on"
+    t.timestamp "due_date"
+    t.integer "probability"
+    t.index ["author_id"], name: "index_deals_on_author_id"
+    t.index ["category_id"], name: "index_deals_on_category_id"
+    t.index ["contact_id"], name: "index_deals_on_contact_id"
+    t.index ["project_id"], name: "index_deals_on_project_id"
+    t.index ["status_id"], name: "index_deals_on_status_id"
+  end
+
+  create_table "deals_issues", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "issue_id", default: 0, null: false
+    t.integer "deal_id", default: 0, null: false
+    t.index ["deal_id"], name: "index_deals_issues_on_deal_id"
+    t.index ["issue_id"], name: "index_deals_issues_on_issue_id"
+  end
+
+  create_table "dmsf_file_revision_accesses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_file_revision_id", null: false
+    t.integer "action", default: 0, null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dmsf_file_revision_id"], name: "index_dmsf_file_revision_accesses_on_dmsf_file_revision_id"
+  end
+
+  create_table "dmsf_file_revisions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_file_id", null: false
+    t.integer "source_dmsf_file_revision_id"
+    t.string "name", null: false
+    t.string "disk_filename", null: false
+    t.bigint "size"
+    t.string "mime_type"
+    t.string "title", null: false
+    t.text "description"
+    t.integer "workflow"
+    t.integer "major_version", null: false
+    t.integer "minor_version", null: false
+    t.integer "patch_version"
+    t.text "comment"
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "dmsf_workflow_id"
+    t.integer "dmsf_workflow_assigned_by_user_id"
+    t.datetime "dmsf_workflow_assigned_at"
+    t.integer "dmsf_workflow_started_by_user_id"
+    t.datetime "dmsf_workflow_started_at"
+    t.string "digest", limit: 64, default: "", null: false
+    t.index ["dmsf_file_id"], name: "index_dmsf_file_revisions_on_dmsf_file_id"
+  end
+
+  create_table "dmsf_files", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.string "name", null: false
+    t.boolean "notification", default: false
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_files_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_files_on_project_id"
+  end
+
+  create_table "dmsf_folder_permissions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_folder_id"
+    t.integer "object_id", null: false
+    t.string "object_type", limit: 30, null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_folder_permissions_on_dmsf_folder_id"
+  end
+
+  create_table "dmsf_folders", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.string "title", null: false
+    t.text "description"
+    t.boolean "notification", default: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.boolean "system", default: false, null: false
+    t.index ["dmsf_folder_id"], name: "index_dmsf_folders_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_folders_on_project_id"
+  end
+
+  create_table "dmsf_links", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "target_project_id", null: false
+    t.integer "target_id"
+    t.string "target_type", limit: 10, null: false
+    t.string "name", null: false
+    t.integer "project_id", null: false
+    t.integer "dmsf_folder_id"
+    t.integer "deleted", default: 0, null: false
+    t.integer "deleted_by_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "external_url"
+    t.integer "user_id"
+    t.index ["dmsf_folder_id"], name: "index_dmsf_links_on_dmsf_folder_id"
+    t.index ["project_id"], name: "index_dmsf_links_on_project_id"
+  end
+
+  create_table "dmsf_locks", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "entity_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "entity_type", null: false
+    t.integer "lock_type_cd", null: false
+    t.integer "lock_scope_cd", null: false
+    t.string "uuid", limit: 36
+    t.datetime "expires_at"
+    t.integer "dmsf_file_last_revision_id"
+    t.string "owner"
+    t.index ["entity_id", "entity_type"], name: "index_dmsf_locks_on_entity_id_and_entity_type"
+  end
+
+  create_table "dmsf_public_urls", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "token", limit: 32, null: false
+    t.integer "dmsf_file_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "expire_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["token"], name: "index_dmsf_public_urls_on_token"
+  end
+
+  create_table "dmsf_workflow_step_actions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_step_assignment_id", null: false
+    t.integer "action", null: false
+    t.text "note"
+    t.timestamp "created_at", default: -> { "current_timestamp()" }, null: false
+    t.integer "author_id", null: false
+    t.index ["dmsf_workflow_step_assignment_id"], name: "idx_dmsf_wfstepact_on_wfstepassign_id"
+  end
+
+  create_table "dmsf_workflow_step_assignments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_step_id", null: false
+    t.integer "user_id", null: false
+    t.integer "dmsf_file_revision_id", null: false
+    t.index ["dmsf_workflow_step_id", "dmsf_file_revision_id"], name: "index_dmsf_wrkfl_step_assigns_on_wrkfl_step_id_and_frev_id", unique: true
+  end
+
+  create_table "dmsf_workflow_steps", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "dmsf_workflow_id", null: false
+    t.integer "step", null: false
+    t.integer "user_id", null: false
+    t.integer "operator", null: false
+    t.string "name", limit: 30
+    t.index ["dmsf_workflow_id"], name: "index_dmsf_workflow_steps_on_dmsf_workflow_id"
+  end
+
+  create_table "dmsf_workflows", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "project_id"
+    t.integer "status", default: 1, null: false
+    t.timestamp "updated_on"
+    t.datetime "created_on"
+    t.integer "author_id"
+  end
+
   create_table "documents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.integer "category_id", default: 0, null: false
@@ -181,6 +542,27 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["category_id"], name: "index_documents_on_category_id"
     t.index ["created_on"], name: "index_documents_on_created_on"
     t.index ["project_id"], name: "documents_project_id"
+  end
+
+  create_table "easy_entity_assignments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "entity_from_type"
+    t.integer "entity_from_id"
+    t.string "entity_to_type"
+    t.integer "entity_to_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["entity_from_id"], name: "entity_assignment_idx_from"
+    t.index ["entity_from_type", "entity_from_id", "entity_to_type", "entity_to_id"], name: "entity_assignment_idx", unique: true
+    t.index ["entity_to_id"], name: "entity_assignment_idx_to"
+  end
+
+  create_table "easy_settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "type"
+    t.string "name"
+    t.text "value"
+    t.integer "project_id"
+    t.index ["name", "project_id"], name: "index_easy_settings_on_name_and_project_id", unique: true
+    t.index ["project_id"], name: "index_easy_settings_on_project_id"
   end
 
   create_table "email_addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -212,10 +594,56 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["project_id"], name: "index_enumerations_on_project_id"
   end
 
+  create_table "favorite_projects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "user_id"
+    t.index ["project_id", "user_id"], name: "index_favorite_projects_on_project_id_and_user_id"
+  end
+
+  create_table "favorite_projects_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.integer "visibility", default: 0
+    t.text "template"
+    t.text "description"
+    t.integer "owner_id"
+    t.index ["owner_id"], name: "index_favorite_projects_templates_on_owner_id"
+  end
+
   create_table "groups_users", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "group_id", null: false
     t.integer "user_id", null: false
     t.index ["group_id", "user_id"], name: "groups_users_ids", unique: true
+  end
+
+  create_table "helpdesk_mail_rules", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "mail_type"
+    t.text "conditions"
+    t.text "actions"
+    t.integer "user_id", null: false
+    t.integer "position", default: 0
+  end
+
+  create_table "helpdesk_tickets", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "contact_id"
+    t.integer "issue_id"
+    t.integer "source", default: 0, null: false
+    t.string "from_address"
+    t.string "to_address"
+    t.datetime "ticket_date"
+    t.string "cc_address"
+    t.string "message_id"
+    t.boolean "is_incoming", default: true
+    t.integer "reaction_time"
+    t.integer "first_response_time"
+    t.integer "resolve_time"
+    t.datetime "last_agent_response_at"
+    t.datetime "last_customer_response_at"
+    t.integer "vote"
+    t.string "vote_comment"
+    t.string "view_id"
+    t.datetime "viewed_on"
+    t.index ["issue_id", "contact_id"], name: "index_helpdesk_tickets_on_issue_id_and_contact_id"
+    t.index ["message_id"], name: "index_helpdesk_tickets_on_message_id"
   end
 
   create_table "import_items", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -311,6 +739,23 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["journal_id"], name: "journal_details_journal_id"
   end
 
+  create_table "journal_messages", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "contact_id"
+    t.integer "journal_id"
+    t.boolean "is_incoming"
+    t.integer "source", default: 0, null: false
+    t.string "from_address"
+    t.string "to_address"
+    t.string "bcc_address"
+    t.string "cc_address"
+    t.datetime "message_date"
+    t.string "message_id"
+    t.string "view_id"
+    t.datetime "viewed_on"
+    t.index ["journal_id", "contact_id"], name: "index_journal_messages_on_journal_id_and_contact_id"
+    t.index ["message_id"], name: "index_journal_messages_on_message_id"
+  end
+
   create_table "journals", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "journalized_id", default: 0, null: false
     t.string "journalized_type", limit: 30, default: "", null: false
@@ -338,6 +783,9 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.integer "project_id", default: 0, null: false
     t.timestamp "created_on"
     t.boolean "mail_notification", default: false, null: false
+    t.boolean "dmsf_mail_notification"
+    t.text "dmsf_title_format", size: :tiny
+    t.boolean "dmsf_fast_links", default: false, null: false
     t.index ["project_id"], name: "index_members_on_project_id"
     t.index ["user_id", "project_id"], name: "index_members_on_user_id_and_project_id", unique: true
     t.index ["user_id"], name: "index_members_on_user_id"
@@ -375,6 +823,20 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["project_id"], name: "news_project_id"
   end
 
+  create_table "notes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "subject"
+    t.text "content"
+    t.integer "source_id"
+    t.string "source_type"
+    t.integer "author_id"
+    t.datetime "created_on"
+    t.datetime "updated_on"
+    t.integer "type_id"
+    t.index ["author_id"], name: "index_notes_on_author_id"
+    t.index ["source_id", "source_type"], name: "index_notes_on_source_id_and_source_type"
+    t.index ["type_id"], name: "index_notes_on_type_id"
+  end
+
   create_table "projects", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "description"
@@ -391,6 +853,12 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.integer "default_version_id"
     t.integer "default_assigned_to_id"
     t.integer "default_issue_query_id"
+    t.boolean "rx_project_template", default: false
+    t.string "rx_resources_distribution", default: "default", null: false
+    t.text "dmsf_description"
+    t.boolean "dmsf_notification", default: false
+    t.integer "dmsf_act_as_attachable", default: 1, null: false
+    t.integer "default_dmsf_query_id"
     t.index ["lft"], name: "index_projects_on_lft"
     t.index ["rgt"], name: "index_projects_on_rgt"
   end
@@ -458,11 +926,72 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["role_id", "managed_role_id"], name: "index_roles_managed_roles_on_role_id_and_managed_role_id", unique: true
   end
 
+  create_table "rx_country_holidays", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "country"
+    t.string "country_iso"
+    t.string "holiday_type"
+    t.date "date"
+    t.integer "year"
+    t.string "name"
+    t.string "state"
+    t.string "state_iso"
+  end
+
+  create_table "rx_fixed_values", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.float "hours", null: false
+    t.date "date", null: false
+    t.integer "author_id", null: false
+    t.bigint "issue_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_rx_fixed_values_on_date"
+    t.index ["issue_id"], name: "index_rx_fixed_values_on_issue_id"
+  end
+
+  create_table "rx_statistics_charts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "rx_statistics_grid_id"
+    t.string "name"
+    t.string "chart_type"
+    t.date "from"
+    t.date "to"
+    t.string "interval"
+    t.string "interval_type"
+    t.string "unit"
+    t.string "datasets"
+    t.text "options"
+    t.integer "color_palette", default: 0
+    t.string "chart_group", default: "projects", null: false
+    t.string "chart_settings"
+    t.index ["rx_statistics_grid_id"], name: "index_rx_statistics_charts_on_rx_statistics_grid_id"
+  end
+
+  create_table "rx_statistics_grids", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "project_id"
+    t.string "grid_type", null: false
+    t.text "data"
+    t.index ["project_id"], name: "index_rx_statistics_grids_on_project_id"
+    t.index ["user_id"], name: "index_rx_statistics_grids_on_user_id"
+  end
+
   create_table "settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.text "value"
     t.timestamp "updated_on"
     t.index ["name"], name: "index_settings_on_name"
+  end
+
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "tag_id"
+    t.integer "taggable_id"
+    t.string "taggable_type"
+    t.datetime "created_at"
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type"
+  end
+
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
   end
 
   create_table "time_entries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
