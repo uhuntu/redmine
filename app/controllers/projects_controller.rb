@@ -109,9 +109,9 @@ class ProjectsController < ApplicationController
     @project.safe_attributes = params[:project]
 
     if @project.save
-      unless User.current.admin?
-        @project.add_default_member(User.current)
-      end
+      # unless User.current.admin?
+      @project.add_default_member(User.current)
+      # end
       respond_to do |format|
         format.html do
           flash[:notice] = l(:notice_successful_create)
