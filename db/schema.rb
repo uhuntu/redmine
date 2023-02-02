@@ -323,6 +323,33 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["customized_type", "customized_id"], name: "custom_values_customized"
   end
 
+  create_table "dashboard_roles", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.bigint "dashboard_id", null: false
+    t.integer "role_id", null: false
+    t.index ["dashboard_id", "role_id"], name: "dashboard_role_ids", unique: true
+    t.index ["dashboard_id"], name: "index_dashboard_roles_on_dashboard_id"
+    t.index ["role_id"], name: "index_dashboard_roles_on_role_id"
+  end
+
+  create_table "dashboards", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "dashboard_type", limit: 30, default: "", null: false
+    t.boolean "system_default", default: false, null: false
+    t.boolean "always_expose", default: false, null: false
+    t.boolean "enable_sidebar", default: false, null: false
+    t.integer "project_id"
+    t.integer "author_id", null: false
+    t.integer "visibility", default: 0, null: false
+    t.text "options"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_dashboards_on_author_id"
+    t.index ["name"], name: "index_dashboards_on_name"
+    t.index ["project_id"], name: "index_dashboards_on_project_id"
+    t.index ["visibility"], name: "index_dashboards_on_visibility"
+  end
+
   create_table "deal_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", null: false
     t.integer "project_id"
@@ -859,6 +886,8 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.boolean "dmsf_notification", default: false
     t.integer "dmsf_act_as_attachable", default: 1, null: false
     t.integer "default_dmsf_query_id"
+    t.text "new_ticket_message"
+    t.integer "enable_new_ticket_message", default: 1, null: false
     t.index ["lft"], name: "index_projects_on_lft"
     t.index ["rgt"], name: "index_projects_on_rgt"
   end
@@ -918,6 +947,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.string "time_entries_visibility", limit: 30, default: "all", null: false
     t.boolean "all_roles_managed", default: true, null: false
     t.text "settings"
+    t.boolean "hide", default: false, null: false
   end
 
   create_table "roles_managed_roles", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
@@ -1160,4 +1190,8 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["tracker_id"], name: "index_workflows_on_tracker_id"
   end
 
+  add_foreign_key "dashboard_roles", "dashboards", on_delete: :cascade
+  add_foreign_key "dashboard_roles", "roles", on_delete: :cascade
+  add_foreign_key "dashboards", "projects", on_delete: :cascade
+  add_foreign_key "dashboards", "users", column: "author_id", on_delete: :cascade
 end
