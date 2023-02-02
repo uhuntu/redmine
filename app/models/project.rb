@@ -124,7 +124,7 @@ class Project < ActiveRecord::Base
       self.identifier = Project.next_identifier
     end
     if !initialized.key?('homepage')
-      self.homepage = User.current.mail
+      self.homepage = User.current
     end
     if !initialized.key?('is_public')
       self.is_public = Setting.default_projects_public?
