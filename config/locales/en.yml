@@ -310,7 +310,7 @@ en:
   field_user: User
   field_principal: Principal
   field_role: Role
-  field_homepage: Homepage
+  field_homepage: Master
   field_is_public: Public
   field_parent: Subproject of
   field_is_in_roadmap: Issues displayed in roadmap
