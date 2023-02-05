@@ -75,7 +75,13 @@ module Redmine
           map.permission :mention_users, {}
           # Watchers
           map.permission :view_issue_watchers, {}, :read => true
-          map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user, :autocomplete_for_mention]}
+          map.permission :add_issue_watchers, {:watchers => [
+            :new, 
+            :create, 
+            :append, 
+            :autocomplete_for_user, 
+            :autocomplete_for_mention
+          ]}
           map.permission :delete_issue_watchers, {:watchers => :destroy}
           map.permission :import_issues, {}
           # Issue categories
@@ -125,7 +131,12 @@ module Redmine
           map.permission :delete_wiki_pages, {:wiki => [:destroy, :destroy_version]}, :require => :member
           map.permission :delete_wiki_pages_attachments, {}
           map.permission :view_wiki_page_watchers, {}, :read => true
-          map.permission :add_wiki_page_watchers, {:watchers => [:new, :create, :autocomplete_for_user, :autocomplete_for_mention]}
+          map.permission :add_wiki_page_watchers, {:watchers => [
+            :new, 
+            :create, 
+            :autocomplete_for_user, 
+            :autocomplete_for_mention
+          ]}
           map.permission :delete_wiki_page_watchers, {:watchers => :destroy}
           map.permission :protect_wiki_pages, {:wiki => :protect}, :require => :member
           map.permission :manage_wiki, {:wikis => :destroy, :wiki => :rename}, :require => :member
@@ -147,7 +158,12 @@ module Redmine
           map.permission :delete_messages, {:messages => :destroy}, :require => :member
           map.permission :delete_own_messages, {:messages => :destroy}, :require => :loggedin
           map.permission :view_message_watchers, {}, :read => true
-          map.permission :add_message_watchers, {:watchers => [:new, :create, :autocomplete_for_user, :autocomplete_for_mention]}
+          map.permission :add_message_watchers, {:watchers => [
+            :new, 
+            :create, 
+            :autocomplete_for_user, 
+            :autocomplete_for_mention
+          ]}
           map.permission :delete_message_watchers, {:watchers => :destroy}
           map.permission :manage_boards, {:projects => :settings, :boards => [:new, :create, :edit, :update, :destroy]}, :require => :member
         end

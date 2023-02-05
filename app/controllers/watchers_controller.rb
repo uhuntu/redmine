@@ -28,7 +28,15 @@ class WatchersController < ApplicationController
     set_watcher(@watchables, User.current, false)
   end
 
-  before_action :find_project, :authorize, :only => [:new, :create, :append, :destroy, :autocomplete_for_user, :autocomplete_for_mention]
+  before_action :find_project, :authorize, :only => [
+    :new, 
+    :create, 
+    :append, 
+    :destroy, 
+    :autocomplete_for_user, 
+    :autocomplete_for_mention
+  ]
+  
   accept_api_auth :create, :destroy
 
   def new
