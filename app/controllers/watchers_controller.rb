@@ -178,6 +178,7 @@ class WatchersController < ApplicationController
     else
       scope = Principal.assignable_watchers.limit(10)
     end
+    
     # Exclude Group principal for now
     scope = scope.where(:type => ['User'])
 
