@@ -103,6 +103,7 @@ class WatchersController < ApplicationController
 
   def autocomplete_for_mention
     users = users_for_mention
+    # Rails.logger.info "users = #{users}"
     render :json => format_users_json(users)
   end
 
