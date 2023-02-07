@@ -309,8 +309,9 @@ en:
   field_fixed_version: Target version
   field_user: User
   field_principal: Principal
+  field_members: Members
   field_role: Role
-  field_homepage: Master
+  field_homepage: Homepage
   field_is_public: Public
   field_parent: Subproject of
   field_is_in_roadmap: Issues displayed in roadmap

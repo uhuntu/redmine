@@ -119,8 +119,10 @@ Rails.application.routes.draw do
   post 'watchers', :to => 'watchers#create'
   post 'watchers/append', :to => 'watchers#append'
   delete 'watchers', :to => 'watchers#destroy'
+  
   get 'watchers/autocomplete_for_mention', to: 'watchers#autocomplete_for_mention', via: [:get]
   get 'watchers/autocomplete_for_user', :to => 'watchers#autocomplete_for_user'
+
   # Specific routes for issue watchers API
   post 'issues/:object_id/watchers', :to => 'watchers#create', :object_type => 'issue'
   delete 'issues/:object_id/watchers/:user_id' => 'watchers#destroy', :object_type => 'issue'
