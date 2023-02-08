@@ -571,6 +571,18 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["project_id"], name: "documents_project_id"
   end
 
+  create_table "drafts", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "target_type", limit: 150, null: false
+    t.bigint "user_id"
+    t.string "parent_type"
+    t.bigint "parent_id"
+    t.binary "data", size: :medium, null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_type", "parent_id"], name: "index_drafts_on_parent"
+    t.index ["user_id", "target_type"], name: "index_drafts_on_user_id_and_target_type"
+    t.index ["user_id"], name: "index_drafts_on_user_id"
+  end
+
   create_table "easy_entity_assignments", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "entity_from_type"
     t.integer "entity_from_id"
@@ -1110,6 +1122,16 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.string "sharing", default: "none", null: false
     t.index ["project_id"], name: "versions_project_id"
     t.index ["sharing"], name: "index_versions_on_sharing"
+  end
+
+  create_table "viewings", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "viewer_id"
+    t.integer "viewed_id"
+    t.string "viewed_type"
+    t.string "ip", limit: 24
+    t.datetime "created_at"
+    t.index ["viewed_type", "viewed_id"], name: "index_viewings_on_viewed_type_and_viewed_id"
+    t.index ["viewer_id"], name: "index_viewings_on_viewer_id"
   end
 
   create_table "watchers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
