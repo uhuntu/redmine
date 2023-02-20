@@ -1,3 +1,5 @@
+vendor
+
 /.project
 /.idea
 /.loadpath
@@ -45,3 +47,6 @@
 
 /node_modules
 yarn-error.log
+files
+plugins
+public/plugin_assets

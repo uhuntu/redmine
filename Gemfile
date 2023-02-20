@@ -1,6 +1,8 @@
-source 'https://rubygems.org'
+#source 'https://rubygems.org'
+#source "https://mirrors.tuna.tsinghua.edu.cn/rubygems/"
+source "https://gems.ruby-china.com/"
 
-ruby '3.1.2'
+ruby '>= 2.5.0', '< 3.2.0'
 gem 'bundler', '>= 1.12.0'
 
 gem 'rails', '6.1.7'
@@ -86,9 +88,10 @@ else
   warn("Please configure your config/database.yml first")
 end
 
-group :development do
+group :production do
   gem 'listen', '~> 3.3'
   gem "yard"
+  gem "strscan", '3.0.6'
 end
 
 group :test do
@@ -117,3 +120,5 @@ end
 Dir.glob File.expand_path("../plugins/*/{Gemfile,PluginGemfile}", __FILE__) do |file|
   eval_gemfile file
 end
+
+gem "passenger"
