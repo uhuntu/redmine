@@ -74,6 +74,70 @@ namespace :redmine do
     Rake::Task["redmine:plugins:assets"].invoke
   end
 
+  desc "Migrate region."
+  task :migrate_region => :environment do
+    csv = CSV.read("actual.csv", headers: true)
+    customers = csv.by_col[0]
+    types     = csv.by_col[1]
+    regions   = csv.by_col[2]
+    Project = Class.new(ActiveRecord::Base)
+    CustomValue = Class.new(ActiveRecord::Base)
+    Project.establish_connection(:production)
+    Project.table_name = "projects"
+    CustomValue.establish_connection(:production)
+    CustomValue.table_name = "custom_values"
+    projects = Project.where(status: 1)
+    custom_values = CustomValue.where(customized_type: "Project")
+    projects.each do |project|
+      custom_value = custom_values.where(customized_id: project[:id])
+      custom_field_ids = custom_value.pluck(:custom_field_id)
+      if custom_field_ids.include?(34)
+        customer = custom_value.where(custom_field_id: 34).pluck(:value)[0]
+        if customer != nil && customer != ""
+          puts "customer = #{customer}, project id = #{project[:id]}"
+          type_csv    = nil
+          region_csv  = nil
+          if customers.include?(customer)
+            type_csv    =   types[customers.index(customer)]
+            region_csv  = regions[customers.index(customer)]
+          end
+          puts "type_csv = #{type_csv}"
+          puts "region_csv = #{region_csv}"
+          if custom_field_ids.include?(61)
+            region = custom_value.where(custom_field_id: 61).pluck(:value)[0]
+            if region != nil && region != ""
+              puts "region = #{region}"
+            else
+              if region_csv != nil && region_csv != ""
+                region = custom_value.where(custom_field_id: 61)
+                region.update(value: region_csv)
+              end
+            end
+          else
+            CustomValue.create(customized_type: "Project", customized_id: project[:id], custom_field_id: 61, value: region_csv)
+          end
+          if custom_field_ids.include?(62)
+            type = custom_value.where(custom_field_id: 62).pluck(:value)[0]
+            if type != nil && type != ""
+              puts "type = #{type}"
+            else
+              if type_csv != nil && type_csv != ""
+                type = custom_value.where(custom_field_id: 62)
+                type.update(value: type_csv)
+              end
+            end
+          else
+            CustomValue.create(customized_type: "Project", customized_id: project[:id], custom_field_id: 62, value: type_csv)
+          end
+        end
+      end
+    end
+    Project.remove_connection
+    CustomValue.remove_connection
+    Object.send(:remove_const, :Project)
+    Object.send(:remove_const, :CustomValue)
+  end
+
   desc 'Migrate hunt.'
   task :migrate_hunt => :environment do
     ActiveRecord::Base.establish_connection :production

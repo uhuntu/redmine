@@ -96,11 +96,13 @@ class Principal < ActiveRecord::Base
       where("1=0")
     else
       ids = projects.map(&:id)
+
       # include active and locked users
       where(:status => [STATUS_LOCKED, STATUS_ACTIVE]).
       where("#{Principal.table_name}.id IN (SELECT DISTINCT user_id FROM #{Member.table_name} WHERE project_id IN (?))", ids)
     end
   end)
+
   # Principals that are not members of projects
   scope :not_member_of, (lambda do |projects|
     projects = [projects] unless projects.is_a?(Array)
@@ -164,6 +166,7 @@ class Principal < ActiveRecord::Base
   # Returns an array of fields names than can be used to make an order statement for principals.
   # Users are sorted before Groups.
   # Examples:
+  
   def self.fields_for_order_statement(table=nil)
     table ||= table_name
     columns = ['type DESC'] + (User.name_formatter[:order] - ['id']) + ['lastname', 'id']

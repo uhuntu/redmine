@@ -110,7 +110,13 @@ module Redmine
           # Watchers
 
           map.permission :view_issue_watchers, {}, :read => true
-          map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user, :autocomplete_for_mention]}
+          map.permission :add_issue_watchers, {:watchers => [
+            :new, 
+            :create, 
+            :append, 
+            :autocomplete_for_user, 
+            :autocomplete_for_mention
+          ]}
           map.permission :delete_issue_watchers, {:watchers => :destroy}
 
           # import
@@ -190,7 +196,6 @@ module Redmine
             :create, 
             :autocomplete_for_user, 
             :autocomplete_for_mention
-
           ]}
           map.permission :delete_wiki_page_watchers, {:watchers => :destroy}
 
@@ -222,7 +227,12 @@ module Redmine
           map.permission :delete_messages, {:messages => :destroy}, :require => :member
           map.permission :delete_own_messages, {:messages => :destroy}, :require => :loggedin
           map.permission :view_message_watchers, {}, :read => true
-          map.permission :add_message_watchers, {:watchers => [:new, :create, :autocomplete_for_user, :autocomplete_for_mention]}
+          map.permission :add_message_watchers, {:watchers => [
+            :new, 
+            :create, 
+            :autocomplete_for_user, 
+            :autocomplete_for_mention
+          ]}
           map.permission :delete_message_watchers, {:watchers => :destroy}
           map.permission :manage_boards, {:projects => :settings, :boards => [:new, :create, :edit, :update, :destroy]}, :require => :member
 

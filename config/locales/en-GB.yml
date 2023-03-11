@@ -259,7 +259,7 @@ en-GB:
   field_principal: Principal
   field_members: Members
   field_role: Role
-  field_homepage: Homepage
+  field_homepage: Master
   field_is_public: Public
   field_parent: Subproject of
   field_is_in_roadmap: Issues displayed in roadmap
@@ -502,7 +502,7 @@ en-GB:
   label_logout: Sign out
   label_help: Help
   label_reported_issues: Reported issues
-  label_assigned_to_me_issues: Issues assigned to me
+  label_assigned_to_me_issues: Assigned issues
   label_last_login: Last connection
   label_registered_on: Registered on
   label_activity: Activity
@@ -1215,7 +1215,7 @@ en-GB:
   warning_fields_cleared_on_bulk_edit: Changes will result in the automatic deletion
     of values from one or more fields on the selected objects
   field_updated_by: Updated by
-  field_last_updated_by: Last updated by
+  field_last_updated_by: Updater
   field_full_width_layout: Full width layout
   label_last_notes: Last notes
   field_digest: Checksum

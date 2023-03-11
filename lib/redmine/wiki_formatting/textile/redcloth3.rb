@@ -1019,7 +1019,7 @@ class RedCloth3 < String
         text.gsub!( /\r\n/, "\n" )
         text.tr!( "\r", "\n" )
         text.gsub!( /\t/, '    ' )
-        text.gsub!( /^ +$/, '' )
+#        text.gsub!( /^ +$/, '' )
         text.gsub!( /\n{3,}/, "\n\n" )
         text.gsub!( /"$/, "\" " )
 
