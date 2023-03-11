@@ -1,35 +1,54 @@
 <%= error_messages_for 'project' %>
 
 <div class="box tabular">
+
 <!--[form:project]-->
+
 <p><%= f.text_field :name, :required => true, :size => 60 %></p>
 
 <p><%= f.text_area :description, :rows => 8, :class => 'wiki-edit' %></p>
+
+<!-- identifier frozen -->
+
 <p><%= f.text_field :identifier, :required => true, :size => 60, :disabled => @project.identifier_frozen?, :maxlength => Project::IDENTIFIER_MAX_LENGTH %>
+
 <% unless @project.identifier_frozen? %>
   <em class="info"><%= l(:text_length_between, :min => 1, :max => Project::IDENTIFIER_MAX_LENGTH) %> <%= l(:text_project_identifier_info).html_safe %></em>
 <% end %></p>
+
+<!-- public ? -->
+
 <p><%= f.text_field :homepage, :size => 60 %></p>
 <p>
   <%= f.check_box :is_public %>
   <em class="info"><%= Setting.login_required? ? l(:text_project_is_public_non_member) : l(:text_project_is_public_anonymous) %></em>
 </p>
 
+<!-- parent project -->
+
 <% unless @project.allowed_parents.compact.empty? %>
     <p><%= label(:project, :parent_id, l(:field_parent)) %><%= parent_project_select_tag(@project) %></p>
 <% end %>
 
+<!-- inherit_members -->
+
 <% if @project.safe_attribute? 'inherit_members' %>
-<p><%= f.check_box :inherit_members %></p>
+  <p><%= f.check_box :inherit_members %></p>
 <% end %>
 
+<!-- project description -->
+
 <%= wikitoolbar_for 'project_description' %>
+
+<!-- custom fields -->
 
 <% @project.visible_custom_field_values.each do |value| %>
   <p><%= custom_field_tag_with_label :project, value %></p>
 <% end %>
 <%= call_hook(:view_projects_form, :project => @project, :form => f) %>
 </div>
+
+<!-- project modules -->
 
 <% if @project.safe_attribute?('enabled_module_names') %>
 <fieldset class="box tabular" id="project_modules"><legend><%= toggle_checkboxes_link('#project_modules input[type="checkbox"]') %><%= l(:label_module_plural) %></legend>
@@ -42,6 +61,7 @@
 <%= hidden_field_tag 'project[enabled_module_names][]', '' %>
 </fieldset>
 <% end %>
+
 <!--[eoform:project]-->
 
 <% unless @project.identifier_frozen? %>
@@ -50,7 +70,20 @@
   <% end %>
 <% end %>
 
+<!-- @project or nil ? -->
+<% if User.current.allowed_to?(:add_project_watchers, @project)%>
+  <%= update_data_sources_for_auto_complete({
+    users: watchers_autocomplete_for_mention_path(
+      project_id: @project, # nil ?
+      q: '', 
+      object_type: 'project',
+      object_id: @project.id
+    )
+  }) %>
+<% end %>
+
 <% if !User.current.admin? && @project.inherit_members? && @project.parent && User.current.member_of?(@project.parent) %>
+
   <%= javascript_tag do %>
     $(document).ready(function() {
       $("#project_inherit_members").change(function(){
@@ -62,4 +95,5 @@
       });
     });
   <% end %>
+
 <% end %>

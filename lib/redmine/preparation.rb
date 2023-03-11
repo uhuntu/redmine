@@ -58,6 +58,18 @@ module Redmine
 
         map.permission :add_subprojects, {:projects => [:new, :create]}, :require => :member
 
+        # Project(s) Watchers
+
+        map.permission :view_project_watchers, {}, :read => true
+        map.permission :add_project_watchers, {:watchers => [
+          :new, 
+          :create, 
+          :append, # wiki miss
+          :autocomplete_for_user, 
+          :autocomplete_for_mention
+        ]}
+        map.permission :delete_project_watchers, {:watchers => :destroy}
+
         # Queries
 
         map.permission :manage_public_queries, {:queries => [:new, :create, :edit, :update, :destroy]}, :require => :member
@@ -100,6 +112,8 @@ module Redmine
           map.permission :view_issue_watchers, {}, :read => true
           map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user, :autocomplete_for_mention]}
           map.permission :delete_issue_watchers, {:watchers => :destroy}
+
+          # import
           map.permission :import_issues, {}
 
           # Issue categories
@@ -169,17 +183,17 @@ module Redmine
           map.permission :rename_wiki_pages, {:wiki => :rename}, :require => :member
           map.permission :delete_wiki_pages, {:wiki => [:destroy, :destroy_version]}, :require => :member
           map.permission :delete_wiki_pages_attachments, {}
+
           map.permission :view_wiki_page_watchers, {}, :read => true
           map.permission :add_wiki_page_watchers, {:watchers => [
-
             :new, 
             :create, 
             :autocomplete_for_user, 
             :autocomplete_for_mention
 
           ]}
-
           map.permission :delete_wiki_page_watchers, {:watchers => :destroy}
+
           map.permission :protect_wiki_pages, {:wiki => :protect}, :require => :member
           map.permission :manage_wiki, {:wikis => :destroy, :wiki => :rename}, :require => :member
 
