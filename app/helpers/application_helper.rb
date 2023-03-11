@@ -1727,6 +1727,7 @@ module ApplicationHelper
   def javascript_heads
     tags = javascript_include_tag(
       'jquery-3.6.0-ui-1.13.1-ujs-6.1.3.1',
+      'jquery-migrate-3.4.0.min.js',
       'tribute-5.1.3.min',
       'tablesort-5.2.1.min.js',
       'tablesort-5.2.1.number.min.js',
@@ -1836,7 +1837,12 @@ module ApplicationHelper
 
   def update_data_sources_for_auto_complete(data_sources)
     javascript_tag(
-      "rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('#{data_sources.to_json}'));"
+      "rm.AutoComplete.dataSources = 
+        Object.assign(
+          rm.AutoComplete.dataSources, 
+          JSON.parse('#{data_sources.to_json}')
+        )
+      ;"
     )
   end
 

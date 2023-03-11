@@ -123,6 +123,9 @@ class Project < ActiveRecord::Base
     if !initialized.key?('identifier') && Setting.sequential_project_identifiers?
       self.identifier = Project.next_identifier
     end
+    if !initialized.key?('homepage')
+      self.homepage = User.current
+    end
     if !initialized.key?('is_public')
       self.is_public = Setting.default_projects_public?
     end
