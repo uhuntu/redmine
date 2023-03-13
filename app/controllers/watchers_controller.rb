@@ -28,7 +28,15 @@ class WatchersController < ApplicationController
     set_watcher(@watchables, User.current, false)
   end
 
-  before_action :find_project, :authorize, :only => [:new, :create, :append, :destroy, :autocomplete_for_user, :autocomplete_for_mention]
+  before_action :find_project, :authorize, :only => [
+    :new, 
+    :create, 
+    :append, 
+    :destroy, 
+    :autocomplete_for_user, 
+    :autocomplete_for_mention
+  ]
+  
   accept_api_auth :create, :destroy
 
   def new
@@ -95,6 +103,7 @@ class WatchersController < ApplicationController
 
   def autocomplete_for_mention
     users = users_for_mention
+    # Rails.logger.info "users = #{users}"
     render :json => format_users_json(users)
   end
 
@@ -170,6 +179,7 @@ class WatchersController < ApplicationController
     else
       scope = Principal.assignable_watchers.limit(10)
     end
+    
     # Exclude Group principal for now
     scope = scope.where(:type => ['User'])
 

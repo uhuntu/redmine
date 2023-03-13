@@ -27,14 +27,16 @@ class ProjectQuery < Query
   end
 
   self.available_columns = [
-    QueryColumn.new(:name, :sortable => "#{Project.table_name}.name"),
-    QueryColumn.new(:status, :sortable => "#{Project.table_name}.status"),
-    QueryColumn.new(:short_description, :sortable => "#{Project.table_name}.description", :caption => :field_description),
-    QueryColumn.new(:homepage, :sortable => "#{Project.table_name}.homepage"),
-    QueryColumn.new(:identifier, :sortable => "#{Project.table_name}.identifier"),
-    QueryColumn.new(:parent_id, :sortable => "#{Project.table_name}.lft ASC", :default_order => 'desc', :caption => :field_parent),
-    QueryColumn.new(:is_public, :sortable => "#{Project.table_name}.is_public", :groupable => true),
-    QueryColumn.new(:created_on, :sortable => "#{Project.table_name}.created_on", :default_order => 'desc')
+    QueryColumn.new(:name,              :sortable => "#{Project.table_name}.name"),
+    QueryColumn.new(:status,            :sortable => "#{Project.table_name}.status"),
+    QueryColumn.new(:short_description, :sortable => "#{Project.table_name}.description",                                   :caption => :field_description),
+    QueryColumn.new(:homepage,          :sortable => "#{Project.table_name}.homepage",                                      :caption => :field_principal),
+    QueryColumn.new(:principal,         :sortable => "#{Project.table_name}.principal",                                     :caption => :field_principal),
+    QueryColumn.new(:members,           :sortable => "#{Project.table_name}.members",                                       :caption => :field_members),
+    QueryColumn.new(:identifier,        :sortable => "#{Project.table_name}.identifier"),
+    QueryColumn.new(:parent_id,         :sortable => "#{Project.table_name}.lft ASC",     :default_order => 'desc',         :caption => :field_parent),
+    QueryColumn.new(:is_public,         :sortable => "#{Project.table_name}.is_public",   :groupable => true),
+    QueryColumn.new(:created_on,        :sortable => "#{Project.table_name}.created_on",  :default_order => 'desc')
   ]
 
   def self.default(project: nil, user: User.current)

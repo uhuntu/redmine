@@ -255,9 +255,10 @@ zh:
   field_priority: 优先级
   field_fixed_version: 目标版本
   field_user: 用户
-  field_principal: 用户/用户组
+  field_principal: 负责人
+  field_members: 成员
   field_role: 角色
-  field_homepage: 主页
+  field_homepage: 主人
   field_is_public: 公开
   field_parent: 上级项目
   field_is_in_roadmap: 在路线图中显示

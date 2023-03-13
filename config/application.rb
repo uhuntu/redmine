@@ -37,7 +37,8 @@ module RedmineApp
       Time,
       Symbol,
       ActiveSupport::HashWithIndifferentAccess,
-      ActionController::Parameters
+      ActionController::Parameters,
+      ActiveSupport::Duration
     ]
 
     config.action_mailer.delivery_job = "ActionMailer::MailDeliveryJob"

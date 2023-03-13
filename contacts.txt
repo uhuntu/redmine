@@ -1,0 +1,7 @@
+= Contacts plugin
+
+== Install
+
+* Copy redmine_contacts plugin to {RAILS_APP}/plugins on your redmine path
+* Run bundle install --without development test RAILS_ENV=production
+* Run rake redmine:plugins NAME=redmine_contacts RAILS_ENV=production
