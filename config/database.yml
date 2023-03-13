@@ -4,7 +4,7 @@
 
 production:
   adapter: mysql2
-  database: redmine-5.0.3
+  database: redmine-5.0.4
   host: localhost
   username: hunt
   password: "hUNt1130"
