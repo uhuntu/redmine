@@ -849,6 +849,35 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["parent_id"], name: "messages_parent_id"
   end
 
+  create_table "messenger_settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "messenger_url"
+    t.string "messenger_icon"
+    t.string "messenger_channel"
+    t.string "messenger_username"
+    t.integer "messenger_verify_ssl", default: 0, null: false
+    t.integer "auto_mentions", default: 0, null: false
+    t.integer "display_watchers", default: 0, null: false
+    t.integer "post_updates", default: 0, null: false
+    t.integer "new_include_description", default: 0, null: false
+    t.integer "updated_include_description", default: 0, null: false
+    t.integer "post_private_issues", default: 0, null: false
+    t.integer "post_private_notes", default: 0, null: false
+    t.integer "post_wiki", default: 0, null: false
+    t.integer "post_wiki_updates", default: 0, null: false
+    t.integer "post_db", default: 0, null: false
+    t.integer "post_db_updates", default: 0, null: false
+    t.integer "post_contact", default: 0, null: false
+    t.integer "post_contact_updates", default: 0, null: false
+    t.integer "post_password", default: 0, null: false
+    t.integer "post_password_updates", default: 0, null: false
+    t.string "default_mentions"
+    t.integer "post_private_contacts", default: 0, null: false
+    t.integer "post_private_db", default: 0, null: false
+    t.integer "messenger_direct_users_messages", default: 0, null: false
+    t.index ["project_id"], name: "index_messenger_settings_on_project_id"
+  end
+
   create_table "news", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id"
     t.string "title", limit: 60, default: "", null: false
