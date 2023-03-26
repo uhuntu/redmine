@@ -4,7 +4,7 @@
 
 production:
   adapter: mysql2
-  database: redmine-5.0.3
+  database: redmine503
   host: localhost
   username: root
   password: t00r
