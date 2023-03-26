@@ -648,6 +648,58 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["owner_id"], name: "index_favorite_projects_templates_on_owner_id"
   end
 
+  create_table "fts_query_expansions", charset: "utf8mb4", collation: "utf8mb4_general_ci", options: "ENGINE=Mroonga", force: :cascade do |t|
+    t.string "source", null: false
+    t.string "destination", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["destination"], name: "index_fts_query_expansions_on_destination", comment: "NORMALIZER 'NormalizerNFKC121'"
+    t.index ["source"], name: "index_fts_query_expansions_on_source", comment: "NORMALIZER 'NormalizerNFKC121'"
+    t.index ["updated_at"], name: "index_fts_query_expansions_on_updated_at"
+  end
+
+  create_table "fts_tag_types", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.index ["name"], name: "index_fts_tag_types_on_name", unique: true
+  end
+
+  create_table "fts_tags", charset: "utf8mb4", collation: "utf8mb4_general_ci", options: "ENGINE=Mroonga", force: :cascade do |t|
+    t.integer "type_id", null: false
+    t.string "name", null: false
+    t.index ["name"], name: "index_fts_tags_on_name", type: :fulltext, comment: "NORMALIZER 'NormalizerNFKC121'"
+    t.index ["type_id", "name"], name: "index_fts_tags_on_type_id_and_name", unique: true
+  end
+
+  create_table "fts_targets", charset: "utf8mb4", collation: "utf8mb4_general_ci", options: "ENGINE=Mroonga", force: :cascade do |t|
+    t.integer "source_id", null: false
+    t.integer "source_type_id", null: false
+    t.integer "project_id", null: false
+    t.integer "container_id"
+    t.integer "container_type_id"
+    t.integer "custom_field_id"
+    t.boolean "is_private"
+    t.timestamp "last_modified_at"
+    t.text "title"
+    t.text "content", size: :long, comment: "FLAGS 'COLUMN_SCALAR|COMPRESS_ZSTD'"
+    t.text "tag_ids", comment: "FLAGS 'COLUMN_VECTOR', GROONGA_TYPE 'Int64'"
+    t.index ["container_id"], name: "index_fts_targets_on_container_id"
+    t.index ["container_type_id"], name: "index_fts_targets_on_container_type_id"
+    t.index ["content"], name: "index_fts_targets_on_content", type: :fulltext, comment: "NORMALIZER 'NormalizerNFKC121', INDEX_FLAGS 'WITH_POSITION|INDEX_LARGE'"
+    t.index ["custom_field_id"], name: "index_fts_targets_on_custom_field_id"
+    t.index ["is_private"], name: "index_fts_targets_on_is_private"
+    t.index ["last_modified_at"], name: "index_fts_targets_on_last_modified_at"
+    t.index ["project_id"], name: "index_fts_targets_on_project_id"
+    t.index ["source_id", "source_type_id"], name: "index_fts_targets_on_source_id_and_source_type_id", unique: true
+    t.index ["source_type_id"], name: "index_fts_targets_on_source_type_id"
+    t.index ["tag_ids"], name: "index_fts_targets_on_tag_ids", type: :fulltext, comment: "LEXICON 'fts_tags', INDEX_FLAGS ''"
+    t.index ["title"], name: "index_fts_targets_on_title", type: :fulltext, comment: "NORMALIZER 'NormalizerNFKC121'"
+  end
+
+  create_table "fts_types", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.index ["name"], name: "index_fts_types_on_name", unique: true
+  end
+
   create_table "groups_users", id: false, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "group_id", null: false
     t.integer "user_id", null: false
@@ -711,6 +763,16 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.integer "assigned_to_id"
     t.index ["assigned_to_id"], name: "index_issue_categories_on_assigned_to_id"
     t.index ["project_id"], name: "issue_categories_project_id"
+  end
+
+  create_table "issue_contents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", options: "ENGINE=Mroonga", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "issue_id", null: false
+    t.text "subject"
+    t.text "contents", size: :long
+    t.integer "status_id"
+    t.boolean "is_private"
+    t.index ["contents"], name: "index_issue_contents_on_contents", type: :fulltext, comment: "TOKENIZER 'TokenMecab'"
   end
 
   create_table "issue_relations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
