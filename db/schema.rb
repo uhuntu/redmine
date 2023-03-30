@@ -238,6 +238,16 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "indexinglogs", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "repository_id"
+    t.integer "changeset_id"
+    t.integer "status"
+    t.string "message"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.index ["repository_id"], name: "index_indexinglogs_on_repository_id"
+  end
+
   create_table "issue_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.string "name", limit: 60, default: "", null: false
@@ -360,6 +370,35 @@ ActiveRecord::Schema.define(version: 2022_02_24_194639) do
     t.index ["created_on"], name: "index_messages_on_created_on"
     t.index ["last_reply_id"], name: "index_messages_on_last_reply_id"
     t.index ["parent_id"], name: "messages_parent_id"
+  end
+
+  create_table "messenger_settings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "messenger_url"
+    t.string "messenger_icon"
+    t.string "messenger_channel"
+    t.string "messenger_username"
+    t.integer "messenger_verify_ssl", default: 0, null: false
+    t.integer "auto_mentions", default: 0, null: false
+    t.integer "display_watchers", default: 0, null: false
+    t.integer "post_updates", default: 0, null: false
+    t.integer "new_include_description", default: 0, null: false
+    t.integer "updated_include_description", default: 0, null: false
+    t.integer "post_private_issues", default: 0, null: false
+    t.integer "post_private_notes", default: 0, null: false
+    t.integer "post_wiki", default: 0, null: false
+    t.integer "post_wiki_updates", default: 0, null: false
+    t.integer "post_db", default: 0, null: false
+    t.integer "post_db_updates", default: 0, null: false
+    t.integer "post_contact", default: 0, null: false
+    t.integer "post_contact_updates", default: 0, null: false
+    t.integer "post_password", default: 0, null: false
+    t.integer "post_password_updates", default: 0, null: false
+    t.string "default_mentions"
+    t.integer "post_private_contacts", default: 0, null: false
+    t.integer "post_private_db", default: 0, null: false
+    t.integer "messenger_direct_users_messages", default: 0, null: false
+    t.index ["project_id"], name: "index_messenger_settings_on_project_id"
   end
 
   create_table "news", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
