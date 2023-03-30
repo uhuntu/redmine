@@ -4,10 +4,10 @@
 
 production:
   adapter: mysql2
-  database: redmine-5.0.4
+  database: redmine504
   host: localhost
-  username: hunt
-  password: "hUNt1130"
+  username: root
+  password: t00r
   # Use "utf8" instead of "utfmb4" for MySQL prior to 5.7.7
   encoding: utf8mb4
 
@@ -16,7 +16,7 @@ development:
   database: redmine_development
   host: localhost
   username: root
-  password: "t00r"
+  password: t00r
   # Use "utf8" instead of "utfmb4" for MySQL prior to 5.7.7
   encoding: utf8mb4
 
@@ -27,8 +27,8 @@ test:
   adapter: mysql2
   database: redmine_test
   host: localhost
-  username: hunt
-  password: "hUNt1130"
+  username: root
+  password: t00r
   # Use "utf8" instead of "utfmb4" for MySQL prior to 5.7.7
   encoding: utf8mb4
 
