@@ -705,16 +705,6 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "indexinglogs", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
-    t.integer "repository_id"
-    t.integer "changeset_id"
-    t.integer "status"
-    t.string "message"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.index ["repository_id"], name: "index_indexinglogs_on_repository_id"
-  end
-
   create_table "issue_categories", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.integer "project_id", default: 0, null: false
     t.string "name", limit: 60, default: "", null: false
