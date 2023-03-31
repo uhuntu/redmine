@@ -142,6 +142,11 @@ namespace :redmine do
   task :migrate_redis => :environment do
     puts "Migrate Redis"
     User.reindex
+    user_index = User.search_index
+    puts "- user_index for #{user_index}..."
+    user_search = user_index.search("hunt")
+    user_results = user_search.results.inspect
+    puts "- user_results = #{user_results}"
   end
 
   desc 'Migrate Hunt.'
