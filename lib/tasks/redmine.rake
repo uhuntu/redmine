@@ -74,7 +74,7 @@ namespace :redmine do
     Rake::Task["redmine:plugins:assets"].invoke
   end
 
-  desc "Migrate region."
+  desc "Migrate Region."
   task :migrate_region => :environment do
     csv = CSV.read("actual.csv", headers: true)
     customers = csv.by_col[0]
@@ -138,7 +138,13 @@ namespace :redmine do
     Object.send(:remove_const, :CustomValue)
   end
 
-  desc 'Migrate hunt.'
+  desc 'Migrate Redis.'
+  task :migrate_redis => :environment do
+    puts "Migrate Redis"
+    User.reindex
+  end
+
+  desc 'Migrate Hunt.'
   task :migrate_hunt => :environment do
     ActiveRecord::Base.establish_connection :production
     source_tables = ActiveRecord::Base.connection.tables.sort
