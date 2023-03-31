@@ -155,7 +155,7 @@ namespace :redmine do
     Issue.reindex
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
-    issue_search = issue_index.search("tes")
+    issue_search = issue_index.search("tes*")
     issue_results = issue_search.results.inspect
     puts "- issue_results = #{issue_results}"
   end
