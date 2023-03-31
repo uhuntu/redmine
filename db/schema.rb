@@ -971,6 +971,16 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.index ["query_id", "role_id"], name: "queries_roles_ids", unique: true
   end
 
+  create_table "rediss_indexing_logs", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.integer "repository_id"
+    t.integer "changeset_id"
+    t.integer "status"
+    t.string "message"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.index ["repository_id"], name: "index_rediss_indexing_logs_on_repository_id"
+  end
+
   create_table "rediss_users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
   end

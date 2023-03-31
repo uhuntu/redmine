@@ -7,4 +7,4 @@
 #   config.log_level = :debug
 #   ...
 #
-
+config.log_level = :debug
