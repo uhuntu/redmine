@@ -24,6 +24,11 @@ class Issue < ActiveRecord::Base
   before_save :set_parent_id
   include Redmine::NestedSet::IssueNestedSet
 
+  redi_search do
+    text_field :subject, phonetic: "dm:en"
+    text_field :description, phonetic: "dm:en"
+  end
+
   belongs_to :project
   belongs_to :tracker
   belongs_to :status, :class_name => 'IssueStatus'
