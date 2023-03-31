@@ -138,15 +138,26 @@ namespace :redmine do
     Object.send(:remove_const, :CustomValue)
   end
 
-  desc 'Migrate Redis.'
-  task :migrate_redis => :environment do
-    puts "Migrate Redis"
+  desc 'Rediss User.'
+  task :rediss_user => :environment do
+    puts "Rediss User"
     User.reindex
     user_index = User.search_index
     puts "- user_index for #{user_index}..."
     user_search = user_index.search("hunt")
     user_results = user_search.results.inspect
     puts "- user_results = #{user_results}"
+  end
+
+  desc 'Rediss Issue.'
+  task :rediss_issue => :environment do
+    puts "Rediss Issue"
+    Issue.reindex
+    issue_index = Issue.search_index
+    puts "- issue_index for #{issue_index}..."
+    issue_search = issue_index.search("tes")
+    issue_results = issue_search.results.inspect
+    puts "- issue_results = #{issue_results}"
   end
 
   desc 'Migrate Hunt.'
