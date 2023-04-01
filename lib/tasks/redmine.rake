@@ -15,6 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+require "openai"
+
 namespace :redmine do
   namespace :attachments do
     desc 'Removes uploaded files left unattached after one day.'
@@ -158,6 +160,22 @@ namespace :redmine do
     issue_search = issue_index.search("tes*")
     issue_results = issue_search.results.inspect
     puts "- issue_results = #{issue_results}"
+  end
+
+  desc "OpenAI Test"
+  task :openai_test => :environment do
+    client = OpenAI::Client.new(access_token: "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")
+    list = client.models.list
+    puts "list = #{list}"
+    model = client.models.retrieve(id: "text-embedding-ada-002")
+    puts "model = #{model}"
+    embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: "The food was delicious and the waiter..."
+      }
+    )
+    puts "embed = #{embed}"
   end
 
   desc 'Migrate Hunt.'
