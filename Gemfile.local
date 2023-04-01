@@ -1,1 +1,1 @@
-gem 'redi_search'
+gem 'redi_search', :git => 'git@github.com:uhuntu/redi_search.git'
