@@ -154,9 +154,21 @@ namespace :redmine do
   desc 'Rediss Issue.'
   task :rediss_issue => :environment do
     puts "Rediss Issue"
-    Issue.reindex
+    # Issue.reindex
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
+    issue_index.drop
+    issue_index.create
+    # i = Issue.find(2)
+    # puts "i = #{i}"
+    # i.add_to_index
+    Issue.all.each do |i|
+      puts "i = #{i}"
+      d = i.search_document
+      puts "d = #{d}"
+      i.add_to_index
+      # i.remove_from_index
+    end
     issue_search = issue_index.search("tes*")
     issue_results = issue_search.results.inspect
     puts "- issue_results = #{issue_results}"
@@ -164,7 +176,7 @@ namespace :redmine do
 
   desc "OpenAI Test"
   task :openai_test => :environment do
-    client = OpenAI::Client.new(access_token: "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")
+    client = OpenAI::Client.new(access_token: "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")
     list = client.models.list
     puts "list = #{list}"
     model = client.models.retrieve(id: "text-embedding-ada-002")
