@@ -176,7 +176,7 @@ namespace :redmine do
 
   desc "OpenAI Test"
   task :openai_test => :environment do
-    client = OpenAI::Client.new(access_token: "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")
+    client = OpenAI::Client.new(access_token: "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")
     list = client.models.list
     puts "list = #{list}"
     model = client.models.retrieve(id: "text-embedding-ada-002")
@@ -187,7 +187,12 @@ namespace :redmine do
         input: "The food was delicious and the waiter..."
       }
     )
-    puts "embed = #{embed}"
+    puts "embed = #{embed.class}"
+    data = embed.parsed_response["data"]
+    embedding = data[0]["embedding"]
+    embedding.each do |e|
+      puts e.class
+    end
   end
 
   desc 'Migrate Hunt.'
