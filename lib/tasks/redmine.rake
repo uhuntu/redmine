@@ -158,66 +158,62 @@ namespace :redmine do
     end
     client = OpenAI::Client.new
 
-    # embed = client.embeddings(
-    #   parameters: {
-    #     model: "text-embedding-ada-002",
-    #     input: "The food was delicious and the waiter..."
-    #   }
-    # )
-
-    # puts "embed = #{embed}"
-    # data = embed.parsed_response["data"]
-    # embedding = data[0]["embedding"]
-    # puts "embedding = #{embedding.length}"
-
     puts "Rediss Issue"
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
-    issue_index.drop
+
+    # issue_index.drop
     issue_index.create
-    find = RediSearch::Document.get(issue_index, 2)
-    puts "find = #{find}"
-    issue = Issue.first
-    
-    subject_text = issue[:subject]
-    description_text = issue[:description]
 
-    subject_embed = client.embeddings(
-      parameters: {
-        model: "text-embedding-ada-002",
-        input: subject_text
-      }
-    )
+    # issue = Issue.first
 
-    description_embed = client.embeddings(
-      parameters: {
-        model: "text-embedding-ada-002",
-        input: description_text
-      }
-    )
+    # puts "issue = #{issue}"
+    # doc = issue.search_document
+    # puts "doc = #{doc.redis_attributes}"
+    # puts doc.document_id
+    # issue.add_to_index
 
-    subject_data = subject_embed.parsed_response["data"]
-    subject_embedding = subject_data[0]["embedding"]
-    puts "subject_embedding = #{subject_embedding}"
+    Issue.all.each do |issue|
+      find = RediSearch::Document.get(issue_index, issue.id)
 
-    description_data = description_embed.parsed_response["data"]
-    description_embedding = description_data[0]["embedding"]
-    puts "description_embedding = #{description_embedding}"
+      puts "find = #{find}"
+      puts "id = #{issue.id}"
 
-    # d = i.search_document(save: {
-    #   :subject_vector     => [0.001009464613161981, -0.020700545981526375].pack("F*"), 
-    #   :description_vector => [-0.020700545981526375, 0.001009464613161981].pack("F*")
-    # })
-    # issue_index.add d
+      if !find.nil?
+        next
+      end
 
-    # Issue.all.each do |i|
-    #   puts "i = #{i}"
-    #   d = i.search_document
-    #   puts "d = #{d.redis_attributes}"
-    #   puts d.document_id
-    #   i.add_to_index
-    #   break
-    # end
+      subject_text = issue[:subject]
+      description_text = issue[:description]
+  
+      puts "Getting subject_embedding..."
+      subject_embed = client.embeddings(
+        parameters: {
+          model: "text-embedding-ada-002",
+          input: subject_text
+        }
+      )
+  
+      puts "Getting description_embedding..."
+      description_embed = client.embeddings(
+        parameters: {
+          model: "text-embedding-ada-002",
+          input: description_text
+        }
+      )
+  
+      subject_data = subject_embed.parsed_response["data"]
+      subject_embedding = subject_data[0]["embedding"]
+  
+      description_data = description_embed.parsed_response["data"]
+      description_embedding = description_data[0]["embedding"]
+  
+      doc = issue.search_document(save: {
+        :subject_vector     => subject_embedding.pack("F*"), 
+        :description_vector => description_embedding.pack("F*")
+      })
+      issue_index.add doc  
+    end
 
     # puts "d = #{d.redis_attributes}"
     # fields = issue_index.schema.fields
