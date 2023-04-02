@@ -153,21 +153,78 @@ namespace :redmine do
 
   desc 'Rediss Issue.'
   task :rediss_issue => :environment do
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+    end
+    client = OpenAI::Client.new
+
+    # embed = client.embeddings(
+    #   parameters: {
+    #     model: "text-embedding-ada-002",
+    #     input: "The food was delicious and the waiter..."
+    #   }
+    # )
+
+    # puts "embed = #{embed}"
+    # data = embed.parsed_response["data"]
+    # embedding = data[0]["embedding"]
+    # puts "embedding = #{embedding.length}"
+
     puts "Rediss Issue"
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
     issue_index.drop
     issue_index.create
-    Issue.all.each do |i|
-      puts "i = #{i}"
-      # d = i.search_document
-      # puts d.document_id
-      # puts d.document_id_without_index
-      # puts "d = #{d}"
-      i.add_to_index
-      break
-    end
-    # find = RediSearch::Document.get(issue_index, 6039)
+    find = RediSearch::Document.get(issue_index, 2)
+    puts "find = #{find}"
+    issue = Issue.first
+    
+    subject_text = issue[:subject]
+    description_text = issue[:description]
+
+    subject_embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: subject_text
+      }
+    )
+
+    description_embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: description_text
+      }
+    )
+
+    subject_data = subject_embed.parsed_response["data"]
+    subject_embedding = subject_data[0]["embedding"]
+    puts "subject_embedding = #{subject_embedding}"
+
+    description_data = description_embed.parsed_response["data"]
+    description_embedding = description_data[0]["embedding"]
+    puts "description_embedding = #{description_embedding}"
+
+    # d = i.search_document(save: {
+    #   :subject_vector     => [0.001009464613161981, -0.020700545981526375].pack("F*"), 
+    #   :description_vector => [-0.020700545981526375, 0.001009464613161981].pack("F*")
+    # })
+    # issue_index.add d
+
+    # Issue.all.each do |i|
+    #   puts "i = #{i}"
+    #   d = i.search_document
+    #   puts "d = #{d.redis_attributes}"
+    #   puts d.document_id
+    #   i.add_to_index
+    #   break
+    # end
+
+    # puts "d = #{d.redis_attributes}"
+    # fields = issue_index.schema.fields
+    # puts "fields = #{fields}"
+
+    # find = RediSearch::Document.get(issue_index, 2)
+    # puts "find = #{find}"
     # puts "find.schema_fields = #{find.schema_fields}"
     # puts "find.redis_attributes = #{find.redis_attributes}"
     # issue_search = issue_index.search("tes*")

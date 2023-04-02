@@ -34,21 +34,19 @@ class Issue < ActiveRecord::Base
       algorithm: "FLAT", 
       count: 10,
       type: "FLOAT32",
-      dim: 2, #1536
+      dim: 1536,
       distance_metric: "COSINE",
       initial_cap: 1024,
       block_size: 1024 do
-      [0.001009464613161981, -0.020700545981526375].pack("F*")
     end
     vector_field :description_vector, 
       algorithm: "FLAT", 
       count: 10,
       type: "FLOAT32",
-      dim: 2, #1536
+      dim: 1536,
       distance_metric: "COSINE",
       initial_cap: 1024,
       block_size: 1024 do
-      [-0.020700545981526375, 0.001009464613161981].pack("F*")
     end
   end
 
