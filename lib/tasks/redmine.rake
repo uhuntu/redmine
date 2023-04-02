@@ -161,12 +161,17 @@ namespace :redmine do
     Issue.all.each do |i|
       puts "i = #{i}"
       d = i.search_document
+      puts d.document_id
+      puts d.document_id_without_index
       puts "d = #{d}"
       i.add_to_index
     end
-    issue_search = issue_index.search("tes*")
-    issue_results = issue_search.results.inspect
-    puts "- issue_results = #{issue_results}"
+    find = RediSearch::Document.get(issue_index, 6039)
+    puts "find.schema_fields = #{find.schema_fields}"
+    puts "find.redis_attributes = #{find.redis_attributes}"
+    # issue_search = issue_index.search("tes*")
+    # issue_results = issue_search.results.inspect
+    # puts "- issue_results = #{issue_results}"
   end
 
   desc "OpenAI Test"

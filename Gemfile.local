@@ -1,2 +1,2 @@
-gem 'redi_search', :git => 'git@github.com:uhuntu/redi_search.git'
+gem 'redi_search', :path => 'work/redi_search'
 gem "ruby-openai"

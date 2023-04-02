@@ -27,8 +27,11 @@ class Issue < ActiveRecord::Base
   redi_search do
     text_field :subject, phonetic: "dm:en"
     text_field :description, phonetic: "dm:en"
+    vector_field :combined do
+      "#{subject} #{description}"
+    end
     # vector_field :subject_vector, 
-    # vector_field :description_vector,
+    # vector_field :description_vector
   end
 
   belongs_to :project
