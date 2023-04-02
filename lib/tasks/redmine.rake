@@ -154,20 +154,15 @@ namespace :redmine do
   desc 'Rediss Issue.'
   task :rediss_issue => :environment do
     puts "Rediss Issue"
-    # Issue.reindex
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
     issue_index.drop
     issue_index.create
-    # i = Issue.find(2)
-    # puts "i = #{i}"
-    # i.add_to_index
     Issue.all.each do |i|
       puts "i = #{i}"
       d = i.search_document
       puts "d = #{d}"
       i.add_to_index
-      # i.remove_from_index
     end
     issue_search = issue_index.search("tes*")
     issue_results = issue_search.results.inspect
