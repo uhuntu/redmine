@@ -23,7 +23,7 @@ class Issue < ActiveRecord::Base
   include Redmine::I18n
   before_save :set_parent_id
   include Redmine::NestedSet::IssueNestedSet
-
+  
   redi_search do
     text_field :subject, phonetic: "dm:en"
     text_field :description, phonetic: "dm:en"
@@ -34,7 +34,7 @@ class Issue < ActiveRecord::Base
       algorithm: "FLAT", 
       count: 10,
       type: "FLOAT32",
-      dim: 2,
+      dim: 2, #1536
       distance_metric: "COSINE",
       initial_cap: 1024,
       block_size: 1024 do
@@ -44,11 +44,11 @@ class Issue < ActiveRecord::Base
       algorithm: "FLAT", 
       count: 10,
       type: "FLOAT32",
-      dim: 2,
+      dim: 2, #1536
       distance_metric: "COSINE",
       initial_cap: 1024,
       block_size: 1024 do
-      [0.001009464613161981, -0.020700545981526375].pack("F*")
+      [-0.020700545981526375, 0.001009464613161981].pack("F*")
     end
   end
 
