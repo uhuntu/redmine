@@ -160,15 +160,16 @@ namespace :redmine do
     issue_index.create
     Issue.all.each do |i|
       puts "i = #{i}"
-      d = i.search_document
-      puts d.document_id
-      puts d.document_id_without_index
-      puts "d = #{d}"
+      # d = i.search_document
+      # puts d.document_id
+      # puts d.document_id_without_index
+      # puts "d = #{d}"
       i.add_to_index
+      break
     end
-    find = RediSearch::Document.get(issue_index, 6039)
-    puts "find.schema_fields = #{find.schema_fields}"
-    puts "find.redis_attributes = #{find.redis_attributes}"
+    # find = RediSearch::Document.get(issue_index, 6039)
+    # puts "find.schema_fields = #{find.schema_fields}"
+    # puts "find.redis_attributes = #{find.redis_attributes}"
     # issue_search = issue_index.search("tes*")
     # issue_results = issue_search.results.inspect
     # puts "- issue_results = #{issue_results}"
@@ -176,7 +177,10 @@ namespace :redmine do
 
   desc "OpenAI Test"
   task :openai_test => :environment do
-    client = OpenAI::Client.new(access_token: "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")
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+    end
+    client = OpenAI::Client.new
     list = client.models.list
     puts "list = #{list}"
     model = client.models.retrieve(id: "text-embedding-ada-002")
@@ -187,12 +191,13 @@ namespace :redmine do
         input: "The food was delicious and the waiter..."
       }
     )
-    puts "embed = #{embed.class}"
+    puts "embed = #{embed}"
     data = embed.parsed_response["data"]
     embedding = data[0]["embedding"]
-    embedding.each do |e|
-      puts e.class
-    end
+    puts "embedding = #{embedding.length}"
+    # embedding.each do |e|
+    #   puts e.class
+    # end
   end
 
   desc 'Migrate Hunt.'

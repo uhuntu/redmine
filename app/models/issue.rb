@@ -27,12 +27,39 @@ class Issue < ActiveRecord::Base
   redi_search do
     text_field :subject, phonetic: "dm:en"
     text_field :description, phonetic: "dm:en"
-    vector_field :combined do
-      "#{subject} #{description}"
+    # text_field :combined do
+    #   "#{subject} #{description}"
+    # end
+    vector_field :subject_vector, 
+      algorithm: "FLAT", 
+      count: 10,
+      type: "FLOAT32",
+      dim: 2,
+      distance_metric: "COSINE",
+      initial_cap: 1024,
+      block_size: 1024 do
+      [0.001009464613161981, -0.020700545981526375].pack("F*")
     end
-    # vector_field :subject_vector, 
-    # vector_field :description_vector
+    vector_field :description_vector, 
+      algorithm: "FLAT", 
+      count: 10,
+      type: "FLOAT32",
+      dim: 2,
+      distance_metric: "COSINE",
+      initial_cap: 1024,
+      block_size: 1024 do
+      [0.001009464613161981, -0.020700545981526375].pack("F*")
+    end
   end
+
+# title_embedding = VectorField("title_vector",
+#     "FLAT", {
+#         "TYPE": "FLOAT32",
+#         "DIM": VECTOR_DIM,
+#         "DISTANCE_METRIC": DISTANCE_METRIC,
+#         "INITIAL_CAP": VECTOR_NUMBER,
+#     }
+# )
 
   belongs_to :project
   belongs_to :tracker
