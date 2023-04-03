@@ -165,27 +165,26 @@ namespace :redmine do
     # issue_index.drop
     issue_index.create
 
-    # issue = Issue.first
-
-    # puts "issue = #{issue}"
-    # doc = issue.search_document
-    # puts "doc = #{doc.redis_attributes}"
-    # puts doc.document_id
-    # issue.add_to_index
-
     Issue.all.each do |issue|
       find = RediSearch::Document.get(issue_index, issue.id)
 
       puts "find = #{find}"
       puts "id = #{issue.id}"
 
+      subject_text = issue[:subject]
+      description_text = issue[:description]
+
+      if description_text.nil? || description_text.empty?
+        if !find.nil?
+          issue.remove_from_index
+        end
+        next
+      end
+  
       if !find.nil?
         next
       end
 
-      subject_text = issue[:subject]
-      description_text = issue[:description]
-  
       puts "Getting subject_embedding..."
       subject_embed = client.embeddings(
         parameters: {
@@ -193,7 +192,17 @@ namespace :redmine do
           input: subject_text
         }
       )
-  
+
+      subject_data = subject_embed.parsed_response["data"]
+      subject_embedding = subject_data[0]["embedding"] if !subject_data.nil?
+
+      if subject_data.nil?
+        puts "subject_data is nil"
+        puts subject_embed["error"]
+        puts subject_text.nil?
+        sleep 10
+      end
+
       puts "Getting description_embedding..."
       description_embed = client.embeddings(
         parameters: {
@@ -202,30 +211,29 @@ namespace :redmine do
         }
       )
   
-      subject_data = subject_embed.parsed_response["data"]
-      subject_embedding = subject_data[0]["embedding"]
-  
       description_data = description_embed.parsed_response["data"]
-      description_embedding = description_data[0]["embedding"]
+      description_embedding = description_data[0]["embedding"] if !description_data.nil?
   
-      doc = issue.search_document(save: {
+      if description_data.nil?
+        puts "description_data is nil"
+        puts description_embed["error"]
+        puts description_text.nil?
+        sleep 10
+      end
+
+      issue_doc = issue.search_document(save: {
         :subject_vector     => subject_embedding.pack("F*"), 
         :description_vector => description_embedding.pack("F*")
-      })
-      issue_index.add doc  
+      }) if !subject_embedding.nil? && !description_embedding.nil?
+
+      issue_index.add issue_doc if !issue_doc.nil?
+
+      if issue_doc.nil?
+        puts "Skipping..."
+      else
+        puts "Inserted..."
+      end
     end
-
-    # puts "d = #{d.redis_attributes}"
-    # fields = issue_index.schema.fields
-    # puts "fields = #{fields}"
-
-    # find = RediSearch::Document.get(issue_index, 2)
-    # puts "find = #{find}"
-    # puts "find.schema_fields = #{find.schema_fields}"
-    # puts "find.redis_attributes = #{find.redis_attributes}"
-    # issue_search = issue_index.search("tes*")
-    # issue_results = issue_search.results.inspect
-    # puts "- issue_results = #{issue_results}"
   end
 
   desc "OpenAI Test"
