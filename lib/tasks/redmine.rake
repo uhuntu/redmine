@@ -151,6 +151,32 @@ namespace :redmine do
     puts "- user_results = #{user_results}"
   end
 
+  desc "Rediss Search."
+  task :rediss_search => :environment do
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+    end
+    client = OpenAI::Client.new
+
+    puts "Rediss Search"
+    issue_index = Issue.search_index
+    puts "- issue_index for #{issue_index.name}..."
+
+    # index_search = issue_index.search("*=>[KNN 10 @subject_vector $vector AS vector_score]")
+    index_search = issue_index
+      .search("test")
+      .return(:subject, :description, :vector_score)
+      .sort_by(:subject)
+      .limit(10)
+      .dialect(2)
+
+    index_search = index_search
+      .params(:vector, "\xec\xb9\xbb\xbe\xd1\x1b\xbb")
+
+    index_results = index_search.results
+    # puts index_results.inspect
+  end
+
   desc 'Rediss Issue.'
   task :rediss_issue => :environment do
     OpenAI.configure do |config|
