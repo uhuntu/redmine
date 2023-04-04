@@ -1,2 +1,2 @@
 gem 'redi_search', :path => 'work/redi_search'
-gem "ruby-openai"
+gem "ruby-openai", :path => 'work/ruby-openai'

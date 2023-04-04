@@ -155,6 +155,7 @@ namespace :redmine do
   task :rediss_search => :environment do
     OpenAI.configure do |config|
       config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+      config.http_proxy = ENV.fetch('http_proxy')
     end
     client = OpenAI::Client.new
 
