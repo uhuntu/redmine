@@ -158,23 +158,46 @@ namespace :redmine do
     end
     client = OpenAI::Client.new
 
+    query_text = "请告诉我一些超标的问题"
+
+    puts "Getting query_embedding..."
+    query_embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: query_text
+      }
+    )
+
+    query_data = query_embed.parsed_response["data"]
+    query_embedding = query_data[0]["embedding"] if !query_data.nil?
+
+    if query_data.nil?
+      puts "query_data is nil"
+      puts query_embed["error"]
+      puts query_text.nil?
+      abort
+    end
+
+    query_pack = query_embedding.pack("F*") if !query_embedding.nil?
+    abort if query_pack.nil?
+
     puts "Rediss Search"
     issue_index = Issue.search_index
     puts "- issue_index for #{issue_index.name}..."
 
-    # index_search = issue_index.search("*=>[KNN 10 @subject_vector $vector AS vector_score]")
     index_search = issue_index
-      .search("test")
+      .search("*=>[KNN 10 @subject_vector $vector AS vector_score]")
       .return(:subject, :description, :vector_score)
       .sort_by(:subject)
       .limit(10)
       .dialect(2)
 
     index_search = index_search
-      .params(:vector, "\xec\xb9\xbb\xbe\xd1\x1b\xbb")
+      .params(:vector, query_pack) if !query_pack.nil?
 
     index_results = index_search.results
-    # puts index_results.inspect
+    # index_inspect = index_results.inspect
+    puts index_results.pluck(:subject, :description)
   end
 
   desc 'Rediss Issue.'
