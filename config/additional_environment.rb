@@ -7,4 +7,5 @@
 #   config.log_level = :debug
 #   ...
 #
-#config.log_level = :debug
+config.log_level = :info
+config.hosts << "redmine.tes-tec.com"
