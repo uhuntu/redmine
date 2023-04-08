@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_080258) do
+ActiveRecord::Schema.define(version: 2023_01_05_082201) do
 
   create_table "addresses", id: :integer, charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "street1"
@@ -431,7 +431,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_080258) do
     t.text "description"
     t.integer "workflow"
     t.integer "major_version", null: false
-    t.integer "minor_version", null: false
+    t.integer "minor_version"
     t.integer "patch_version"
     t.text "comment"
     t.integer "deleted", default: 0, null: false
