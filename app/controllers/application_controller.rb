@@ -19,6 +19,7 @@
 
 require 'uri'
 require 'cgi'
+require 'get_process_mem'
 
 class Unauthorized < StandardError; end
 
@@ -102,7 +103,8 @@ class ApplicationController < ActionController::Base
     Setting.check_cache
     # Find the current user
     User.current = find_current_user
-    logger.info("  Current user: " + (User.current.logged? ? "#{User.current.login} (id=#{User.current.id})" : "anonymous")) if logger
+    mem = GetProcessMem.new
+    logger.info("Memory used : #{mem.mb.round(0)} MB  Current user: " + (User.current.logged? ? "#{User.current.login} (id=#{User.current.id})" : "anonymous")) if logger
   end
 
   # Returns the current user or nil if no user is logged in

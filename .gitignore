@@ -44,7 +44,7 @@
 
 /.bundle
 /Gemfile.lock
-/Gemfile.local
+# /Gemfile.local
 
 /node_modules
 yarn-error.log
