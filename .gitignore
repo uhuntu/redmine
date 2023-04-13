@@ -45,10 +45,6 @@
 /.bundle
 /Gemfile.lock
 /Gemfile.local
-/work
 
 /node_modules
 yarn-error.log
-
-redmine
-backup
