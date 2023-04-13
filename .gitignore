@@ -41,7 +41,7 @@
 
 /.bundle
 /Gemfile.lock
-/Gemfile.local
+# /Gemfile.local
 /work
 
 dmsf_index/
