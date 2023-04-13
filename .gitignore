@@ -44,6 +44,9 @@
 /Gemfile.local
 /work
 
+dmsf_index/
+file_index/
+
 /node_modules
 yarn-error.log
 
