@@ -1837,12 +1837,7 @@ module ApplicationHelper
 
   def update_data_sources_for_auto_complete(data_sources)
     javascript_tag(
-      "rm.AutoComplete.dataSources = 
-        Object.assign(
-          rm.AutoComplete.dataSources, 
-          JSON.parse('#{data_sources.to_json}')
-        )
-      ;"
+      "rm.AutoComplete.dataSources = Object.assign(rm.AutoComplete.dataSources, JSON.parse('#{data_sources.to_json}'));"
     )
   end
 
