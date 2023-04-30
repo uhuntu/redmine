@@ -41,13 +41,7 @@
 
 /.bundle
 /Gemfile.lock
-# /Gemfile.local
-/work
-
-dmsf_index/
-file_index/
+/Gemfile.local
 
 /node_modules
 yarn-error.log
-
-redmine
