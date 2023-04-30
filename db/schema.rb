@@ -1144,6 +1144,7 @@ ActiveRecord::Schema.define(version: 2023_01_05_082201) do
     t.string "twofa_totp_key"
     t.integer "twofa_totp_last_used_at"
     t.boolean "twofa_required", default: false
+    t.integer "rx_resources_type", default: 0, null: false
     t.index ["auth_source_id"], name: "index_users_on_auth_source_id"
     t.index ["id", "type"], name: "index_users_on_id_and_type"
     t.index ["type"], name: "index_users_on_type"
