@@ -19,15 +19,11 @@
 
 module Redmine
   module Preparation
-
     def self.prepare
-
       ActiveRecord::Base.include Redmine::Acts::Positioned
       ActiveRecord::Base.include Redmine::Acts::Mentionable
       ActiveRecord::Base.include Redmine::I18n
 
-      # version control
-      
       Scm::Base.add "Subversion"
       Scm::Base.add "Mercurial"
       Scm::Base.add "Cvs"
@@ -36,11 +32,7 @@ module Redmine
       Scm::Base.add "Filesystem"
 
       # Permissions
-
       AccessControl.map do |map|
-
-        # Projects ?
-
         map.permission :view_project, {:projects => [:show, :bookmark], :activities => [:index]}, :public => true, :read => true
         map.permission :search_project, {:search => :index}, :public => true, :read => true
         map.permission :add_project, {:projects => [:new, :create]}, :require => :loggedin
@@ -49,39 +41,15 @@ module Redmine
         map.permission :delete_project, {:projects => :destroy}, :require => :member, :read => true
         map.permission :select_project_modules, {:projects => :modules}, :require => :member
         map.permission :view_members, {:members => [:index, :show]}, :public => true, :read => true
-
-        map.permission :manage_members, {:projects => :settings, :members => [
-          :index, :show, :new, :create, :edit, :update, :destroy, :autocomplete]}, :require => :member
-
-        map.permission :manage_versions, {:projects => :settings, :versions => [
-          :new, :create, :edit, :update, :close_completed, :destroy]}, :require => :member
-
+        map.permission :manage_members, {:projects => :settings, :members => [:index, :show, :new, :create, :edit, :update, :destroy, :autocomplete]}, :require => :member
+        map.permission :manage_versions, {:projects => :settings, :versions => [:new, :create, :edit, :update, :close_completed, :destroy]}, :require => :member
         map.permission :add_subprojects, {:projects => [:new, :create]}, :require => :member
-
-        # Project(s) Watchers
-
-        map.permission :view_project_watchers, {}, :read => true
-        map.permission :add_project_watchers, {:watchers => [
-          :new, 
-          :create, 
-          :append, # wiki miss
-          :autocomplete_for_user, 
-          :autocomplete_for_mention
-        ]}
-        map.permission :delete_project_watchers, {:watchers => :destroy}
-
         # Queries
-
         map.permission :manage_public_queries, {:queries => [:new, :create, :edit, :update, :destroy]}, :require => :member
-
         map.permission :save_queries, {:queries => [:new, :create, :edit, :update, :destroy]}, :require => :loggedin
 
-        # issue_tracking
-
         map.project_module :issue_tracking do |map|
-
           # Issues
-
           map.permission :view_issues, {:issues => [:index, :show, :issue_tab],
                                         :auto_complete => [:issues],
                                         :context_menus => [:issues],
@@ -90,7 +58,6 @@ module Redmine
                                         :queries => :index,
                                         :reports => [:issue_report, :issue_report_details]},
                          :read => true
-
           map.permission :add_issues, {:issues => [:new, :create], :attachments => :upload}
           map.permission :edit_issues, {:issues => [:edit, :update, :bulk_edit, :bulk_update], :journals => [:new], :attachments => :upload}
           map.permission :edit_own_issues, {:issues => [:edit, :update, :bulk_edit, :bulk_update], :journals => [:new], :attachments => :upload}
@@ -105,33 +72,16 @@ module Redmine
           map.permission :view_private_notes, {}, :read => true, :require => :member
           map.permission :set_notes_private, {}, :require => :member
           map.permission :delete_issues, {:issues => :destroy}, :require => :member
-          map.permission :mention_users, {}
-
           # Watchers
-
           map.permission :view_issue_watchers, {}, :read => true
-          map.permission :add_issue_watchers, {:watchers => [
-            :new, 
-            :create, 
-            :append, 
-            :autocomplete_for_user, 
-            :autocomplete_for_mention
-          ]}
+          map.permission :add_issue_watchers, {:watchers => [:new, :create, :append, :autocomplete_for_user, :autocomplete_for_mention]}
           map.permission :delete_issue_watchers, {:watchers => :destroy}
-
-          # import
           map.permission :import_issues, {}
-
           # Issue categories
-
           map.permission :manage_categories, {:projects => :settings, :issue_categories => [:index, :show, :new, :create, :edit, :update, :destroy]}, :require => :member
-
         end
 
-        # time_tracking
-
         map.project_module :time_tracking do |map|
-
           map.permission :view_time_entries, {:timelog => [:index, :report, :show]}, :read => true
           map.permission :log_time, {:timelog => [:new, :create]}, :require => :loggedin
           map.permission :edit_time_entries,
@@ -145,43 +95,27 @@ module Redmine
                          :require => :member
           map.permission :log_time_for_other_users, :require => :member
           map.permission :import_time_entries, {}
-
         end
 
-        # news
-
         map.project_module :news do |map|
-
           map.permission :view_news, {:news => [:index, :show]}, :read => true
           map.permission :manage_news, {:news => [:new, :create, :edit, :update, :destroy], :comments => [:destroy], :attachments => :upload}, :require => :member
           map.permission :comment_news, {:comments => :create}
-
         end
 
-        # documents
-
         map.project_module :documents do |map|
-
           map.permission :view_documents, {:documents => [:index, :show, :download]}, :read => true
           map.permission :add_documents, {:documents => [:new, :create, :add_attachment], :attachments => :upload}, :require => :loggedin
           map.permission :edit_documents, {:documents => [:edit, :update, :add_attachment], :attachments => :upload}, :require => :loggedin
           map.permission :delete_documents, {:documents => [:destroy]}, :require => :loggedin
-
         end
-
-        # files
 
         map.project_module :files do |map|
-
           map.permission :view_files, {:files => :index, :versions => :download}, :read => true
           map.permission :manage_files, {:files => [:new, :create], :attachments => :upload}, :require => :loggedin
-
         end
 
-        # wiki
-
         map.project_module :wiki do |map|
-
           map.permission :view_wiki_pages, {:wiki => [:index, :show, :special, :date_index], :auto_complete => [:wiki_pages]}, :read => true
           map.permission :view_wiki_edits, {:wiki => [:history, :diff, :annotate]}, :read => true
           map.permission :export_wiki_pages, {:wiki => [:export]}, :read => true
@@ -189,37 +123,22 @@ module Redmine
           map.permission :rename_wiki_pages, {:wiki => :rename}, :require => :member
           map.permission :delete_wiki_pages, {:wiki => [:destroy, :destroy_version]}, :require => :member
           map.permission :delete_wiki_pages_attachments, {}
-
           map.permission :view_wiki_page_watchers, {}, :read => true
-          map.permission :add_wiki_page_watchers, {:watchers => [
-            :new, 
-            :create, 
-            :autocomplete_for_user, 
-            :autocomplete_for_mention
-          ]}
+          map.permission :add_wiki_page_watchers, {:watchers => [:new, :create, :autocomplete_for_user, :autocomplete_for_mention]}
           map.permission :delete_wiki_page_watchers, {:watchers => :destroy}
-
           map.permission :protect_wiki_pages, {:wiki => :protect}, :require => :member
           map.permission :manage_wiki, {:wikis => :destroy, :wiki => :rename}, :require => :member
-
         end
 
-        # repository
-
         map.project_module :repository do |map|
-
           map.permission :view_changesets, {:repositories => [:show, :revisions, :revision]}, :read => true
           map.permission :browse_repository, {:repositories => [:show, :browse, :entry, :raw, :annotate, :changes, :diff, :stats, :graph]}, :read => true
           map.permission :commit_access, {}
           map.permission :manage_related_issues, {:repositories => [:add_related_issue, :remove_related_issue]}
-          map.permission :manage_repository, {:projects => :settings, :repositories => [
-            :new, :create, :edit, :update, :committers, :destroy, :fetch_changesets]}, :require => :member
+          map.permission :manage_repository, {:projects => :settings, :repositories => [:new, :create, :edit, :update, :committers, :destroy, :fetch_changesets]}, :require => :member
         end
 
-        # boards
-
         map.project_module :boards do |map|
-
           map.permission :view_messages, {:boards => [:index, :show], :messages => [:show]}, :read => true
           map.permission :add_messages, {:messages => [:new, :reply, :quote], :attachments => :upload}
           map.permission :edit_messages, {:messages => :edit, :attachments => :upload}, :require => :member
@@ -227,31 +146,19 @@ module Redmine
           map.permission :delete_messages, {:messages => :destroy}, :require => :member
           map.permission :delete_own_messages, {:messages => :destroy}, :require => :loggedin
           map.permission :view_message_watchers, {}, :read => true
-          map.permission :add_message_watchers, {:watchers => [
-            :new, 
-            :create, 
-            :autocomplete_for_user, 
-            :autocomplete_for_mention
-          ]}
+          map.permission :add_message_watchers, {:watchers => [:new, :create, :autocomplete_for_user, :autocomplete_for_mention]}
           map.permission :delete_message_watchers, {:watchers => :destroy}
           map.permission :manage_boards, {:projects => :settings, :boards => [:new, :create, :edit, :update, :destroy]}, :require => :member
-
         end
-
-        # calendar
 
         map.project_module :calendar do |map|
           map.permission :view_calendar, {:calendars => [:show, :update]}, :read => true
         end
 
-        # gantt
-
         map.project_module :gantt do |map|
           map.permission :view_gantt, {:gantts => [:show, :update]}, :read => true
         end
       end
-
-      # top_menu
 
       MenuManager.map :top_menu do |menu|
         menu.push :home, :home_path
@@ -264,8 +171,6 @@ module Redmine
         menu.push :help, Info.help_url, :last => true
       end
 
-      # account_menu
-
       MenuManager.map :account_menu do |menu|
         menu.push :login, :signin_path, :if => Proc.new {!User.current.logged?}
         menu.push :register, :register_path,
@@ -275,8 +180,6 @@ module Redmine
         menu.push :logout, :signout_path, :html => {:method => 'post'},
                   :if => Proc.new {User.current.logged?}
       end
-
-      # application_menu
 
       MenuManager.map :application_menu do |menu|
         menu.push :projects, {:controller => 'projects', :action => 'index'},
@@ -335,7 +238,6 @@ module Redmine
         )
       end
 
-      # admin_menu
       MenuManager.map :admin_menu do |menu|
         menu.push :projects, {:controller => 'admin', :action => 'projects'},
                   :caption => :label_project_plural,
@@ -375,7 +277,6 @@ module Redmine
                   :html => {:class => 'icon icon-help'}
       end
 
-      # project_menu
       MenuManager.map :project_menu do |menu|
         menu.push(
           :new_object, nil, :caption => ' + ',
@@ -470,8 +371,6 @@ module Redmine
                   :last => true
       end
 
-      # activity
-
       Activity.map do |activity|
         activity.register :issues, :class_name => %w(Issue Journal)
         activity.register :changesets
@@ -483,8 +382,6 @@ module Redmine
         activity.register :time_entries, :default => false
       end
 
-      # search
-
       Search.map do |search|
         search.register :issues
         search.register :news
@@ -495,8 +392,6 @@ module Redmine
         search.register :projects
       end
 
-      # format
-
       WikiFormatting.map do |format|
         format.register :textile
         format.register :markdown if Object.const_defined?(:Redcarpet)
@@ -506,9 +401,6 @@ module Redmine
       end
 
       ActionView::Template.register_template_handler :rsb, Views::ApiTemplateHandler
-
     end
-
   end
-
 end
