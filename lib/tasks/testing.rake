@@ -97,10 +97,4 @@ namespace :test do
     Rails::TestUnit::Runner.rake_run FileList['test/integration/routing/*_test.rb'] + FileList['test/integration/api_test/*_routing_test.rb']
   end
   Rake::Task['test:routing'].comment = "Run the routing tests"
-
-  task(:hunting) do |t|
-    $: << "test"
-    Rails::TestUnit::Runner.rake_run FileList['test/integration/hunting/*_test.rb'] + FileList['test/integration/api_test/*_hunting_test.rb']
-  end
-  Rake::Task['test:hunting'].comment = "Run the hunting tests"
 end
