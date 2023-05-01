@@ -23,11 +23,6 @@ class User < Principal
   include Redmine::Ciphering
   include Redmine::SafeAttributes
 
-  # redi_search do
-  #   text_field :firstname, phonetic: "dm:en"
-  #   text_field :lastname, phonetic: "dm:en"
-  # end
-
   # Different ways of displaying/sorting users
   USER_FORMATS = {
     :firstname_lastname => {
