@@ -23,41 +23,6 @@ class Issue < ActiveRecord::Base
   include Redmine::I18n
   before_save :set_parent_id
   include Redmine::NestedSet::IssueNestedSet
-  
-  # redi_search do
-  #   text_field :subject, phonetic: "dm:en"
-  #   text_field :description, phonetic: "dm:en"
-  #   # text_field :combined do
-  #   #   "#{subject} #{description}"
-  #   # end
-  #   vector_field :subject_vector, 
-  #     algorithm: "FLAT", 
-  #     count: 10,
-  #     type: "FLOAT32",
-  #     dim: 1536,
-  #     distance_metric: "COSINE",
-  #     initial_cap: 1024,
-  #     block_size: 1024 do
-  #   end
-  #   vector_field :description_vector, 
-  #     algorithm: "FLAT", 
-  #     count: 10,
-  #     type: "FLOAT32",
-  #     dim: 1536,
-  #     distance_metric: "COSINE",
-  #     initial_cap: 1024,
-  #     block_size: 1024 do
-  #   end
-  # end
-
-# title_embedding = VectorField("title_vector",
-#     "FLAT", {
-#         "TYPE": "FLOAT32",
-#         "DIM": VECTOR_DIM,
-#         "DISTANCE_METRIC": DISTANCE_METRIC,
-#         "INITIAL_CAP": VECTOR_NUMBER,
-#     }
-# )
 
   belongs_to :project
   belongs_to :tracker
