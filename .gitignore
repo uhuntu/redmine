@@ -45,3 +45,7 @@
 
 /node_modules
 yarn-error.log
+
+dmsf_index/
+file_index/
+work/
