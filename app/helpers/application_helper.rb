@@ -1622,6 +1622,13 @@ module ApplicationHelper
   def calendar_for(field_id)
     include_calendar_headers_tags
     javascript_tag(
+      "$(function() { $('##{field_id}').addClass('date').datepickerFallback(datepickerOptions); });"
+    )
+  end
+
+  def calendar_for_timelog(field_id)
+    include_calendar_headers_tags
+    javascript_tag(
       "$(function() { $('##{field_id}').addClass('date').attr('min', function() {
         var mydate = new Date();
         var mymonth = mydate.getMonth();
