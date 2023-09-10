@@ -1622,8 +1622,11 @@ module ApplicationHelper
   def calendar_for(field_id)
     include_calendar_headers_tags
     callback = ""
+    time = Time.now
     if field_id == 'time_entry_spent_on'
-      callback = ".datepickerCallback()"
+      if time.day >= 4
+        callback = ".datepickerCallback()"
+      end
     end
     javascript_tag(
       "$(function() { $('##{field_id}').addClass('date').datepickerFallback(datepickerOptions)#{callback}; });"
