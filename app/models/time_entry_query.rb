@@ -96,6 +96,10 @@ class TimeEntryQuery < Query
       :name => l(:label_attribute_of_project, :name => l(:field_status)),
       :values => lambda {project_statuses_values}
     ) if project.nil? || !project.leaf?
+    add_available_filter(
+      "member_of_group",
+      :type => :list_optional, :values => lambda {Group.givable.visible.collect {|g| [g.name, g.id.to_s]}}
+    )
 
     add_available_filter "comments", :type => :text
     add_available_filter "hours", :type => :float
@@ -224,6 +228,25 @@ class TimeEntryQuery < Query
 
   def sql_for_project_status_field(field, operator, value, options={})
     sql_for_field(field, operator, value, Project.table_name, "status")
+  end
+
+  def sql_for_member_of_group_field(field, operator, value)
+    if operator == '*' # Any group
+      groups = Group.givable
+      operator = '=' # Override the operator since we want to find by assigned_to
+    elsif operator == "!*"
+      groups = Group.givable
+      operator = '!' # Override the operator since we want to find by assigned_to
+    else
+      groups = Group.where(:id => value).to_a
+    end
+    groups ||= []
+
+    members_of_groups = groups.inject([]) do |user_ids, group|
+      user_ids + group.user_ids + [group.id]
+    end.uniq.compact.sort.collect(&:to_s)
+
+    '(' + sql_for_field("assigned_to_id", operator, members_of_groups, Issue.table_name, "assigned_to_id", false) + ')'
   end
 
   # Accepts :from/:to params as shortcut filters
