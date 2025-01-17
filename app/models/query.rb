@@ -1097,7 +1097,11 @@ class Query < ActiveRecord::Base
     end
     if column.is_a?(QueryCustomFieldColumn)
       custom_field = column.custom_field
-      send :total_for_custom_field, custom_field, scope
+      if custom_field.name == "Phase"
+        send :total_for_phase, scope
+      else
+        send :total_for_custom_field, custom_field, scope
+      end
     else
       send "total_for_#{column.name}", scope
     end
@@ -1118,6 +1122,28 @@ class Query < ActiveRecord::Base
   def total_for_custom_field(custom_field, scope, &block)
     total = custom_field.format.total_for_scope(custom_field, scope)
     total = map_total(total) {|t| custom_field.format.cast_total_value(custom_field, t)}
+    total
+  end
+
+  def total_for_phase(scope)
+    total = scope
+      .joins(:project)
+      .sum(:status)
+    if total.is_a?(Hash)
+      total.each do |tt|
+        if tt.is_a?(Array)
+          if tt[0].is_a?(Project)
+            stage = CustomValue
+              .where(:customized_type => "Project",
+                :custom_field_id => 65,
+                :customized_id => tt[0].id)
+            stage.each do |ss|
+              total[tt[0]] = ss[:value]
+            end
+          end
+        end
+      end
+    end
     total
   end
 

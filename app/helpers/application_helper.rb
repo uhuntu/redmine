@@ -1621,8 +1621,15 @@ module ApplicationHelper
 
   def calendar_for(field_id)
     include_calendar_headers_tags
+    callback = ""
+    time = Time.now
+    if field_id == 'time_entry_spent_on'
+      if time.day >= 4
+        callback = ".datepickerCallback()"
+      end
+    end
     javascript_tag(
-      "$(function() { $('##{field_id}').addClass('date').datepickerFallback(datepickerOptions); });"
+      "$(function() { $('##{field_id}').addClass('date').datepickerFallback(datepickerOptions)#{callback}; });"
     )
   end
 
@@ -1727,6 +1734,7 @@ module ApplicationHelper
   def javascript_heads
     tags = javascript_include_tag(
       'jquery-3.6.1-ui-1.13.2-ujs-6.1.7',
+      'jquery-migrate-3.4.0.min.js',
       'tribute-5.1.3.min',
       'tablesort-5.2.1.min.js',
       'tablesort-5.2.1.number.min.js',

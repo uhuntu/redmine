@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-ruby '>= 2.5.0', '< 3.2.0'
+ruby '3.1.2'
+
 gem 'bundler', '>= 1.12.0'
+
+gem 'blankslate'
 
 gem 'rails', '6.1.7'
 gem 'globalid', '~> 0.4.2' if Gem.ruby_version < Gem::Version.new('2.6.0')

@@ -1012,6 +1012,17 @@ function toggleNewObjectDropdown() {
     nativeDateInputSupported = false;
   }
 
+  $.fn.datepickerCallback = function() {
+    return this.attr('min', function() {
+      var mydate = new Date();
+      var mymonth = mydate.getMonth();
+      var myyear = mydate.getFullYear();
+      var firstDay = new Date(myyear, mymonth, 1);
+      var firstDayFormatted = $.datepicker.formatDate('yy-mm-dd', firstDay);
+      return firstDayFormatted;
+    })
+  };
+
   $.fn.datepickerFallback = function( options ) {
     if (nativeDateInputSupported) {
       return this;

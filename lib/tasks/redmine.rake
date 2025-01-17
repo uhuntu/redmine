@@ -15,6 +15,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#require "openai"
+
 namespace :redmine do
   namespace :attachments do
     desc 'Removes uploaded files left unattached after one day.'
@@ -72,6 +74,177 @@ namespace :redmine do
   task :plugins do
     Rake::Task["redmine:plugins:migrate"].invoke
     Rake::Task["redmine:plugins:assets"].invoke
+  end
+
+  desc 'Rediss User.'
+  task :rediss_user => :environment do
+    puts "Rediss User"
+    User.reindex
+    user_index = User.search_index
+    puts "- user_index for #{user_index}..."
+    user_search = user_index.search("hunt")
+    user_results = user_search.results.inspect
+    puts "- user_results = #{user_results}"
+  end
+
+  desc "Rediss Search."
+  task :rediss_search => :environment do
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+      config.http_proxy = ENV.fetch('http_proxy')
+    end
+    client = OpenAI::Client.new
+
+    query_text = "请告诉我一些超标的问题"
+
+    puts "Getting query_embedding..."
+    query_embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: query_text
+      }
+    )
+
+    query_data = query_embed.parsed_response["data"]
+    query_embedding = query_data[0]["embedding"] if !query_data.nil?
+
+    if query_data.nil?
+      puts "query_data is nil"
+      puts query_embed["error"]
+      puts query_text.nil?
+      abort
+    end
+
+    query_pack = query_embedding.pack("F*") if !query_embedding.nil?
+    abort if query_pack.nil?
+
+    puts "Rediss Search"
+    issue_index = Issue.search_index
+    puts "- issue_index for #{issue_index.name}..."
+
+    index_search = issue_index
+      .search("*=>[KNN 10 @subject_vector $vector AS vector_score]")
+      .return(:subject, :description, :vector_score)
+      .sort_by(:subject)
+      .limit(10)
+      .dialect(2)
+
+    index_search = index_search
+      .params(:vector, query_pack) if !query_pack.nil?
+
+    index_results = index_search.results
+    # index_inspect = index_results.inspect
+    puts index_results.pluck(:subject, :description)
+  end
+
+  desc 'Rediss Issue.'
+  task :rediss_issue => :environment do
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+    end
+    client = OpenAI::Client.new
+
+    puts "Rediss Issue"
+    issue_index = Issue.search_index
+    puts "- issue_index for #{issue_index.name}..."
+
+    # issue_index.drop
+    issue_index.create
+
+    Issue.all.each do |issue|
+      find = RediSearch::Document.get(issue_index, issue.id)
+
+      puts "find = #{find}"
+      puts "id = #{issue.id}"
+
+      subject_text = issue[:subject]
+      description_text = issue[:description]
+
+      if description_text.nil? || description_text.empty?
+        if !find.nil?
+          issue.remove_from_index
+        end
+        next
+      end
+  
+      if !find.nil?
+        next
+      end
+
+      puts "Getting subject_embedding..."
+      subject_embed = client.embeddings(
+        parameters: {
+          model: "text-embedding-ada-002",
+          input: subject_text
+        }
+      )
+
+      subject_data = subject_embed.parsed_response["data"]
+      subject_embedding = subject_data[0]["embedding"] if !subject_data.nil?
+
+      if subject_data.nil?
+        puts "subject_data is nil"
+        puts subject_embed["error"]
+        puts subject_text.nil?
+        sleep 10
+      end
+
+      puts "Getting description_embedding..."
+      description_embed = client.embeddings(
+        parameters: {
+          model: "text-embedding-ada-002",
+          input: description_text
+        }
+      )
+  
+      description_data = description_embed.parsed_response["data"]
+      description_embedding = description_data[0]["embedding"] if !description_data.nil?
+  
+      if description_data.nil?
+        puts "description_data is nil"
+        puts description_embed["error"]
+        puts description_text.nil?
+        sleep 10
+      end
+
+      issue_doc = issue.search_document(save: {
+        :subject_vector     => subject_embedding.pack("F*"), 
+        :description_vector => description_embedding.pack("F*")
+      }) if !subject_embedding.nil? && !description_embedding.nil?
+
+      issue_index.add issue_doc if !issue_doc.nil?
+
+      if issue_doc.nil?
+        puts "Skipping..."
+      else
+        puts "Inserted..."
+      end
+    end
+  end
+
+  desc "OpenAI Test"
+  task :openai_test => :environment do
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch('OPENAI_ACCESS_TOKEN')
+    end
+    client = OpenAI::Client.new
+    list = client.models.list
+    puts "list = #{list}"
+    model = client.models.retrieve(id: "text-embedding-ada-002")
+    puts "model = #{model}"
+    embed = client.embeddings(
+      parameters: {
+        model: "text-embedding-ada-002",
+        input: "The food was delicious and the waiter..."
+      }
+    )
+    puts "embed = #{embed}"
+    data = embed.parsed_response["data"]
+    embedding = data[0]["embedding"]
+    puts "embedding = #{embedding.length}"
+    # embedding.each do |e|
+    #   puts e.class
+    # end
   end
 
 desc <<-DESC

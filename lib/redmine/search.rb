@@ -139,7 +139,7 @@ module Redmine
         # tokens must be at least 2 characters long
         # but for Chinese characters (Chinese HANZI/Japanese KANJI), tokens can be one character
         # no more than 5 tokens to search for
-        tokens.uniq.select{|w| w.length > 1 || w =~ /\p{Han}/}.first 5
+        tokens.uniq.select{|w| w.length > 0 || w =~ /\p{Han}/}.first 15
       end
     end
 
