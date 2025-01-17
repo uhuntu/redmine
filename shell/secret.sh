@@ -1,0 +1,1 @@
+bundle exec rake generate_secret_token
