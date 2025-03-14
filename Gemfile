@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '3.1.2'
 gem 'bundler', '>= 1.12.0'
-
+gem 'concurrent-ruby', '1.3.4'
 gem 'blankslate'
 
 gem 'rails', '6.1.7.6'
