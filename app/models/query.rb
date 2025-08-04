@@ -553,7 +553,7 @@ class Query < ActiveRecord::Base
   end
 
   def all_projects
-    @all_projects ||= Project.visible.to_a
+    @all_projects ||= Project.active.to_a
   end
 
   def all_projects_values
